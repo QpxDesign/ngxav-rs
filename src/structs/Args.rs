@@ -46,6 +46,6 @@ pub struct ArgParser {
     #[arg(short = 'i', long = "ip_ses")]
     pub ip_session: Option<String>,
 
-    #[arg(short = 'c', long = "threads")]
-    pub threads: Option<u8>,
+    #[arg(short = 'c', long = "conservemem")]
+    pub conserve_memory: Option<bool>,
 }

@@ -61,9 +61,3 @@ pub fn keep_line(line: String) -> bool {
     }
     return true;
 }
-/*
-parsed_line = parse_line(line)
-        if args.last is not None and parse_nginx_time_format(parsed_line["time"]).timestamp() < (time.time()- float(args.last)*60):
-            return False
-        return True
- */
