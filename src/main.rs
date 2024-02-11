@@ -1,6 +1,7 @@
+use crate::sort_by_date::sort_by_date;
 use clap::Parser;
 use rayon::prelude::*;
-
+use utils::sort_by_date;
 #[path = "./structs/mod.rs"]
 mod structs;
 mod utils;
@@ -26,7 +27,7 @@ fn main() {
         .collect();
     if !args.unique.is_none() && args.unique == Some(true) {
         kel = utils::unique_ips_only::unique_ips_only(kel);
-        for line in kel {
+        for line in sort_by_date(kel) {
             println!("{}", line);
         }
     } else if !args.analytics.is_none() && args.analytics == Some(true) {
