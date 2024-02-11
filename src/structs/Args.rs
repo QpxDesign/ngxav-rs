@@ -35,7 +35,7 @@ pub struct ArgParser {
     #[arg(short = 'l', long = "lst")]
     pub last: Option<u8>,
 
-    #[arg(short, long)]
+    #[arg(short, long, action=ArgAction::SetTrue)]
     pub unique: Option<bool>,
 
     #[arg(short, long, action=ArgAction::SetTrue)]

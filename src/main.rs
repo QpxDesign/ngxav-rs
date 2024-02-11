@@ -1,5 +1,6 @@
 use clap::Parser;
 use rayon::prelude::*;
+use utils::unique_ips_only;
 
 #[path = "./structs/mod.rs"]
 mod structs;
@@ -20,11 +21,13 @@ fn main() {
     let args: crate::structs::Args::ArgParser = ArgParser::parse();
     let lines: Vec<String> = lines_from_file(args.file).expect("should read");
 
-    let kel: Vec<_> = lines
+    let mut kel: Vec<_> = lines
         .into_par_iter()
         .filter(|p| utils::keep_line::keep_line(p.to_string()) == true)
         .collect();
-
+    if !args.unique.is_none() && args.unique == Some(true) {
+        kel = utils::unique_ips_only::unique_ips_only(kel);
+    }
     if !args.analytics.is_none() && args.analytics == Some(true) {
         utils::generate_analytics::generate_analytical_output(kel.clone());
     } else {
