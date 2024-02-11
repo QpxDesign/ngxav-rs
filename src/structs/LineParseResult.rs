@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub struct LineParseResultStruct {
     pub ip_address: String,
     pub time: String,

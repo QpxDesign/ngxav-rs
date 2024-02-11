@@ -5,7 +5,6 @@ use regex::Regex;
 
 pub fn parse_line(line: &str) -> structs::LineParseResult::LineParseResultStruct {
     let fields = line.split(" ").collect::<Vec<_>>();
-    let re = Regex::new(r####"(.*?)"####).unwrap();
     return structs::LineParseResult::LineParseResultStruct {
         ip_address: fields[0].to_string(),
         time: fields[3].replace("[", ""),

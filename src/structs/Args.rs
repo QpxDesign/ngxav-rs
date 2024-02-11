@@ -1,3 +1,4 @@
+use clap::ArgAction;
 use clap::Parser;
 
 #[derive(Parser, Clone)]
@@ -37,7 +38,7 @@ pub struct ArgParser {
     #[arg(short, long)]
     pub unique: Option<bool>,
 
-    #[arg(short, long)]
+    #[arg(short, long, action=ArgAction::SetTrue)]
     pub analytics: Option<bool>,
 
     #[arg(short = 'x', long = "sa")]
