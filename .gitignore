@@ -2,3 +2,5 @@ target/*
 .vscode
 .env
 tests/*
+flamegraph.svg
+cargo-flamegraph.stacks

@@ -69,5 +69,6 @@ pub fn keep_line(line: String) -> bool {
             return false;
         }
     }
+
     return true;
 }

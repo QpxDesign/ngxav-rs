@@ -8,8 +8,5 @@ edition = "2021"
 [dependencies]
 chrono = "0.4.33"
 clap = { version = "4.4.18", features = ["derive"] }
-kdam = "0.5.1"
 regex = "1.10.3"
-threadpool = "1.8.1"
 tokio = { version = "1.36.0", features = ["full"] }
-tqdm = "0.6.0"
