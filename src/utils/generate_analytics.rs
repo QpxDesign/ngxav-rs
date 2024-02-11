@@ -4,7 +4,6 @@ use crate::utils::parse_line::parse_line;
 use std::collections::HashMap;
 
 pub fn generate_analytical_output(log_selection: Vec<std::string::String>) {
-    println!("{}", log_selection.len());
     let mut stats: structs::AnalyticsResult::AnalyticsResult =
         structs::AnalyticsResult::AnalyticsResult {
             request_count: 0,
@@ -63,7 +62,6 @@ pub fn generate_analytical_output(log_selection: Vec<std::string::String>) {
     top_ips.sort_by_key(|a| a.count);
     top_ips.reverse();
 
-    println!("{}", top_requests.len());
     println!(
         "
     ===~ LOG SELECTION STATS ~===
