@@ -1,6 +1,6 @@
 [package]
 name = "ngxav"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 license = "MIT"
 description = "Search through NGINX logs with advanced filters and support for displaying analytics about your selected log entries"
