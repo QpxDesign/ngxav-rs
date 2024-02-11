@@ -26,6 +26,9 @@ fn main() {
         .collect();
     if !args.unique.is_none() && args.unique == Some(true) {
         kel = utils::unique_ips_only::unique_ips_only(kel);
+        for line in kel {
+            println!("{}", line);
+        }
     } else if !args.analytics.is_none() && args.analytics == Some(true) {
         utils::generate_analytics::generate_analytical_output(kel.clone());
     } else if !args.session_analytics.is_none() && args.session_analytics == Some(true) {
