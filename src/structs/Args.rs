@@ -5,6 +5,7 @@ use clap::Parser;
 #[command(version, about, long_about = None)]
 pub struct ArgParser {
     /// Name of the person to greet
+
     #[arg(short = 'f', long = "file")]
     pub file: String,
 
@@ -43,6 +44,9 @@ pub struct ArgParser {
 
     #[arg(short = 'x', long = "sa", action=ArgAction::SetTrue)]
     pub session_analytics: Option<bool>,
+
+    #[arg(short = 'p', long = "pt", action=ArgAction::SetTrue)]
+    pub plain_text: Option<bool>,
 
     #[arg(short = 'i', long = "ip_ses")]
     pub ip_session: Option<String>,

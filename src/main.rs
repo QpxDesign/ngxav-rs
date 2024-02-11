@@ -8,6 +8,7 @@ mod utils;
 use crate::structs::Args::ArgParser;
 
 use std::{
+    borrow::Borrow,
     fs::File,
     io::{self, BufRead, BufReader},
     path::Path,
@@ -16,14 +17,14 @@ use std::{
 fn lines_from_file(filename: impl AsRef<Path>) -> io::Result<Vec<String>> {
     BufReader::new(File::open(filename)?).lines().collect()
 }
-
 fn main() {
     let args: crate::structs::Args::ArgParser = ArgParser::parse();
-    let lines: Vec<String> = lines_from_file(args.file).expect("should read");
+
+    let lines: Vec<String> = lines_from_file(args.file.clone()).expect("should read");
 
     let mut kel: Vec<_> = lines
         .into_par_iter()
-        .filter(|p| utils::keep_line::keep_line(p.to_string()) == true)
+        .filter(|p: &String| utils::keep_line::keep_line(p.to_string(), &args) == true)
         .collect();
     if !args.unique.is_none() && args.unique == Some(true) {
         kel = utils::unique_ips_only::unique_ips_only(kel);
@@ -34,7 +35,7 @@ fn main() {
         utils::session_analytics::session_analytics(kel.clone());
     } else {
         for line in sort_by_date(kel.clone()) {
-            println!("{}", line);
+            println!("{}", line + "\n");
         }
     }
 }

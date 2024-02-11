@@ -1,18 +1,25 @@
-use clap::Parser;
-use regex::Regex;
-
 use crate::structs::Args::ArgParser;
 use crate::utils::parse_nginx_time_format::parse_nginx_time_format;
+use clap::Parser;
+use regex::Regex;
+#[path = "../structs/mod.rs"]
+mod structs;
 
 use std::time::{SystemTime, UNIX_EPOCH};
 
-pub fn keep_line(line: String) -> bool {
-    let args: crate::structs::Args::ArgParser = ArgParser::parse();
+pub fn keep_line(line: String, AArgs: &ArgParser) -> bool {
     let parsed_line = crate::utils::parse_line::parse_line(&line);
+    let args = AArgs.clone();
     if !args.search.is_none() {
-        let re = Regex::new(&args.search.clone().unwrap().to_string()).unwrap();
-        if !re.is_match(&line) {
-            return false;
+        if !args.plain_text.is_none() && args.plain_text == Some(true) {
+            if !line.contains(&args.search.unwrap().to_string()) {
+                return false;
+            }
+        } else {
+            let re = Regex::new(&args.search.clone().unwrap().to_string()).unwrap();
+            if !re.is_match(&line) {
+                return false;
+            }
         }
     }
     if !args.start_date.is_none() && args.end_date.is_none() {
