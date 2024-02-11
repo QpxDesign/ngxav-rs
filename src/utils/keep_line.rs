@@ -54,7 +54,7 @@ pub fn keep_line(line: String) -> bool {
     let since_the_epoch = start
         .duration_since(UNIX_EPOCH)
         .expect("Time went backwards");
-    let mut epoch_seconds: u64 = since_the_epoch.as_secs() * 1000;
+    let mut epoch_seconds: u64 = since_the_epoch.as_secs();
     if !args.last.is_none() {
         epoch_seconds = epoch_seconds - 60 * args.last.unwrap();
         if parse_nginx_time_format(&parsed_line.time).timestamp() < (epoch_seconds as i64) {
