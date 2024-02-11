@@ -1,6 +1,5 @@
 use clap::Parser;
 use rayon::prelude::*;
-use utils::unique_ips_only;
 
 #[path = "./structs/mod.rs"]
 mod structs;
@@ -27,9 +26,10 @@ fn main() {
         .collect();
     if !args.unique.is_none() && args.unique == Some(true) {
         kel = utils::unique_ips_only::unique_ips_only(kel);
-    }
-    if !args.analytics.is_none() && args.analytics == Some(true) {
+    } else if !args.analytics.is_none() && args.analytics == Some(true) {
         utils::generate_analytics::generate_analytical_output(kel.clone());
+    } else if !args.session_analytics.is_none() && args.session_analytics == Some(true) {
+        utils::session_analytics::session_analytics(kel.clone());
     } else {
         for line in kel.clone() {
             println!("{}", line);

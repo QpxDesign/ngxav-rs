@@ -41,7 +41,7 @@ pub struct ArgParser {
     #[arg(short, long, action=ArgAction::SetTrue)]
     pub analytics: Option<bool>,
 
-    #[arg(short = 'x', long = "sa")]
+    #[arg(short = 'x', long = "sa", action=ArgAction::SetTrue)]
     pub session_analytics: Option<bool>,
 
     #[arg(short = 'i', long = "ip_ses")]

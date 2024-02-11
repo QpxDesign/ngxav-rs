@@ -7,7 +7,7 @@ pub fn parse_line(line: &str) -> structs::LineParseResult::LineParseResultStruct
     let fields = line.split(" ").collect::<Vec<_>>();
     return structs::LineParseResult::LineParseResultStruct {
         ip_address: fields[0].to_string(),
-        time: fields[3].replace("[", ""),
+        time: fields[3].replace("[", "") + " " + &fields[4].replace("]", ""),
         host: fields[5].replace('"', ""),
         referer: fields[11].replace('"', ""),
         request: fields[6].to_owned() + " " + fields[7],
