@@ -6,6 +6,8 @@ use utils::sort_by_date;
 mod structs;
 mod utils;
 use crate::structs::Args::ArgParser;
+use crate::structs::LineParseResult::LineParseResult;
+use crate::utils::parse_line::parse_line;
 
 use std::{
     borrow::Borrow,
@@ -19,8 +21,9 @@ fn lines_from_file(filename: impl AsRef<Path>) -> io::Result<Vec<String>> {
 }
 fn main() {
     let args: crate::structs::Args::ArgParser = ArgParser::parse();
-
-    let lines: Vec<String> = lines_from_file(args.file.clone()).expect("should read");
+    let mut lines: Vec<String> = lines_from_file(args.file.clone()).expect("should read");
+    let parsed_lines: Vec<crate::structs::LineParseResult::LineParseResult> =
+        lines.par_iter().map(|l: &String| parse_line(l)).collect();
 
     let mut kel: Vec<_> = lines
         .into_par_iter()
@@ -34,15 +37,7 @@ fn main() {
     } else if !args.session_analytics.is_none() && args.session_analytics == Some(true) {
         utils::session_analytics::session_analytics(kel.clone());
     } else if !args.large.is_none() {
-        kel = utils::sort_by_body_size::sort_by_body_size(kel.clone());
-        let mut i = 0;
-        for line in kel {
-            if (i < args.large.unwrap()) {
-                println!("{}", line);
-                i += 1;
-            }
-        }
-
+        utils::sort_by_body_size::sort_by_body_size(parsed_lines, args.large.unwrap());
     } else {
         for line in sort_by_date(kel.clone()) {
             println!("{}", line + "\n");
