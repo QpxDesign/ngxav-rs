@@ -4,10 +4,10 @@ use lazy_static::lazy_static;
 use regex::Regex;
 
 lazy_static! {
-    static ref r: Regex = Regex::new("\"(.*?)\"").unwrap();
+    static ref R: Regex = Regex::new("\"(.*?)\"").unwrap();
 }
 pub fn parse_line(line: &str) -> crate::structs::LineParseResult::LineParseResult {
-    let matches: Vec<&str> = r.find_iter(line).map(|mat| mat.as_str()).collect();
+    let matches: Vec<&str> = R.find_iter(line).map(|mat| mat.as_str()).collect();
     let fields = line.split(" ").collect::<Vec<_>>();
 
     return crate::structs::LineParseResult::LineParseResult {

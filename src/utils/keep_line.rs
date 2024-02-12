@@ -1,6 +1,6 @@
 use crate::structs::Args::ArgParser;
+use crate::utils::parse_input_time::parse_input_time;
 use crate::utils::parse_nginx_time_format::parse_nginx_time_format;
-use clap::Parser;
 use regex::Regex;
 #[path = "../structs/mod.rs"]
 mod structs;
@@ -10,6 +10,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 pub fn keep_line(line: String, AArgs: &ArgParser) -> bool {
     let parsed_line = crate::utils::parse_line::parse_line(&line);
     let args = AArgs.clone();
+    let tz = parsed_line.time.split(" ").collect::<Vec<_>>()[1];
+
     if !args.search.is_none() {
         if !args.plain_text.is_none() && args.plain_text == Some(true) {
             if !line.contains(&args.search.unwrap().to_string()) {
@@ -24,14 +26,14 @@ pub fn keep_line(line: String, AArgs: &ArgParser) -> bool {
     }
     if !args.start_date.is_none() && args.end_date.is_none() {
         if parse_nginx_time_format(&parsed_line.time)
-            < parse_nginx_time_format(&args.start_date.clone().unwrap())
+            < parse_input_time(args.start_date.clone().unwrap(), tz.to_string())
         {
             return false;
         }
     }
     if !args.end_date.is_none() && args.start_date.is_none() {
         if parse_nginx_time_format(&parsed_line.time)
-            > parse_nginx_time_format(&args.end_date.clone().unwrap())
+            > parse_input_time(args.end_date.clone().unwrap(), tz.to_string())
         {
             return false;
         }
@@ -39,9 +41,9 @@ pub fn keep_line(line: String, AArgs: &ArgParser) -> bool {
     if !args.start_date.is_none()
         && !args.end_date.is_none()
         && (parse_nginx_time_format(&parsed_line.time)
-            > parse_nginx_time_format(&args.end_date.unwrap())
+            > parse_input_time(args.end_date.unwrap(), tz.to_string())
             || parse_nginx_time_format(&parsed_line.time)
-                < parse_nginx_time_format(&args.start_date.unwrap()))
+                < parse_input_time(args.start_date.unwrap(), tz.to_string()))
     {
         return false;
     }
