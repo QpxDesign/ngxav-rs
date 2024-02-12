@@ -53,16 +53,16 @@ pub fn sessionize(lines: Vec<std::string::String>) -> Vec<SessionOccurrences> {
                     let mut tmp: Vec<String> = Vec::new();
                     for l in &entry.unwrap().times {
                         if index == 0 {
-                            tmp.push(entry.unwrap().lines[0].clone());
+                            tmp.push("a".to_string());
                         } else if l.timestamp() - entry.unwrap().times[index - 1].timestamp()
                             < session_cutoff_min * 60
                         {
-                            tmp.push(entry.unwrap().lines[index].clone());
+                            tmp.push("a".to_string());
                         } else {
-                            sessions.push(tmp.clone());
+                            sessions.push(tmp);
 
                             tmp = Vec::new();
-                        }
+                        } //34.46s user 1.15s system 122% cpu 29.166 total
                         index += 1;
                     }
                     occurrences
