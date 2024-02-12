@@ -33,6 +33,16 @@ fn main() {
         utils::generate_analytics::generate_analytical_output(kel.clone());
     } else if !args.session_analytics.is_none() && args.session_analytics == Some(true) {
         utils::session_analytics::session_analytics(kel.clone());
+    } else if !args.large.is_none() {
+        kel = utils::sort_by_body_size::sort_by_body_size(kel.clone());
+        let mut i = 0;
+        for line in kel {
+            if (i < args.large.unwrap()) {
+                println!("{}", line);
+                i += 1;
+            }
+        }
+
     } else {
         for line in sort_by_date(kel.clone()) {
             println!("{}", line + "\n");

@@ -6,3 +6,4 @@ pub mod session_analytics;
 pub mod sessionize;
 pub mod sort_by_date;
 pub mod unique_ips_only;
+pub mod sort_by_body_size;

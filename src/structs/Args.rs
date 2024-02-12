@@ -31,7 +31,7 @@ pub struct ArgParser {
     pub referer: Option<String>,
 
     #[arg(short = 'm', long = "large")]
-    pub large: Option<u8>,
+    pub large: Option<usize>,
 
     #[arg(short = 'l', long = "lst")]
     pub last: Option<u64>,
