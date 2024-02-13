@@ -1,4 +1,3 @@
-use crate::utils::parse_line::parse_line;
 use crate::utils::parse_nginx_time_format::parse_nginx_time_format;
 use rayon::slice::ParallelSliceMut;
 

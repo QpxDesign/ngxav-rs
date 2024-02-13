@@ -10,58 +10,58 @@ use lazy_static::lazy_static;
 
 use std::time::{SystemTime, UNIX_EPOCH};
 lazy_static! {
-    static ref args: crate::structs::Args::ArgParser = ArgParser::parse();
+    static ref ARGS: crate::structs::Args::ArgParser = ArgParser::parse();
 }
 pub fn keep_line(parsed_line: LineParseResult) -> bool {
     let tz = parsed_line.time.split(" ").collect::<Vec<_>>()[1];
-    if !args.search.is_none() {
-        if !args.plain_text.is_none() && args.plain_text == Some(true) {
+    if !ARGS.search.is_none() {
+        if !ARGS.plain_text.is_none() && ARGS.plain_text == Some(true) {
             if !parsed_line
                 .full_text
-                .contains(&args.search.clone().unwrap().to_string())
+                .contains(&ARGS.search.clone().unwrap().to_string())
             {
                 return false;
             }
         } else {
-            let re = Regex::new(&args.search.clone().unwrap().to_string()).unwrap();
+            let re = Regex::new(&ARGS.search.clone().unwrap().to_string()).unwrap();
             if !re.is_match(&parsed_line.full_text) {
                 return false;
             }
         }
     }
-    if !args.start_date.is_none() && args.end_date.is_none() {
+    if !ARGS.start_date.is_none() && ARGS.end_date.is_none() {
         if parse_nginx_time_format(&parsed_line.time)
-            < parse_input_time(args.start_date.clone().unwrap(), tz.to_string())
+            < parse_input_time(ARGS.start_date.clone().unwrap(), tz.to_string())
         {
             return false;
         }
     }
-    if !args.end_date.is_none() && args.start_date.is_none() {
+    if !ARGS.end_date.is_none() && ARGS.start_date.is_none() {
         if parse_nginx_time_format(&parsed_line.time)
-            > parse_input_time(args.end_date.clone().unwrap(), tz.to_string())
+            > parse_input_time(ARGS.end_date.clone().unwrap(), tz.to_string())
         {
             return false;
         }
     }
-    if !args.start_date.is_none()
-        && !args.end_date.is_none()
+    if !ARGS.start_date.is_none()
+        && !ARGS.end_date.is_none()
         && (parse_nginx_time_format(&parsed_line.time)
-            > parse_input_time(args.end_date.clone().unwrap(), tz.to_string())
+            > parse_input_time(ARGS.end_date.clone().unwrap(), tz.to_string())
             || parse_nginx_time_format(&parsed_line.time)
-                < parse_input_time(args.start_date.clone().unwrap(), tz.to_string()))
+                < parse_input_time(ARGS.start_date.clone().unwrap(), tz.to_string()))
     {
         return false;
     }
-    if !args.host.is_none() && parsed_line.host != args.host.clone().unwrap() {
+    if !ARGS.host.is_none() && parsed_line.host != ARGS.host.clone().unwrap() {
         return false;
     }
-    if !args.request.is_none() && !parsed_line.request.contains(&args.request.clone().unwrap()) {
+    if !ARGS.request.is_none() && !parsed_line.request.contains(&ARGS.request.clone().unwrap()) {
         return false;
     }
-    if !args.http_status.is_none() && parsed_line.status != args.http_status.clone().unwrap() {
+    if !ARGS.http_status.is_none() && parsed_line.status != ARGS.http_status.clone().unwrap() {
         return false;
     }
-    if !args.referer.is_none() && parsed_line.referer != args.referer.clone().unwrap() {
+    if !ARGS.referer.is_none() && parsed_line.referer != ARGS.referer.clone().unwrap() {
         return false;
     }
     let start = SystemTime::now();
@@ -69,8 +69,8 @@ pub fn keep_line(parsed_line: LineParseResult) -> bool {
         .duration_since(UNIX_EPOCH)
         .expect("Time went backwards");
     let mut epoch_seconds: u64 = since_the_epoch.as_secs();
-    if !args.last.is_none() {
-        epoch_seconds = epoch_seconds - 60 * args.last.unwrap();
+    if !ARGS.last.is_none() {
+        epoch_seconds = epoch_seconds - 60 * ARGS.last.unwrap();
         if parse_nginx_time_format(&parsed_line.time).timestamp() < (epoch_seconds as i64) {
             return false;
         }

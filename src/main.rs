@@ -21,7 +21,7 @@ fn lines_from_file(filename: impl AsRef<Path>) -> io::Result<Vec<String>> {
 fn main() {
     let args: crate::structs::Args::ArgParser = ArgParser::parse();
     let lines: Vec<String> = lines_from_file(args.file.clone()).expect("should read");
-    let mut parsed_lines: Vec<crate::structs::LineParseResult::LineParseResult> =
+    let parsed_lines: Vec<crate::structs::LineParseResult::LineParseResult> =
         lines.par_iter().map(|l: &String| parse_line(l)).collect();
 
     let mut kel: Vec<LineParseResult> = parsed_lines
@@ -36,9 +36,11 @@ fn main() {
     if !args.analytics.is_none() && args.analytics == Some(true) {
         utils::generate_analytics::generate_analytical_output(kel);
     } else if !args.session_analytics.is_none() && args.session_analytics == Some(true) {
-        //  utils::session_analytics::session_analytics(kel);
+        utils::session_analytics::session_analytics(kel);
     } else if !args.large.is_none() {
         utils::sort_by_body_size::sort_by_body_size(kel, args.large.unwrap());
+    } else if !args.ip_ses.is_none() {
+        utils::sessions_from_ip::sessions_from_ip(kel, args.ip_ses.unwrap());
     } else {
         for line in sort_by_date(kel) {
             println!("{}", line.full_text + "\n");

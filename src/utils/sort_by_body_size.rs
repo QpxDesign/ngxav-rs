@@ -1,8 +1,6 @@
 #[path = "../structs/mod.rs"]
 mod structs;
 use crate::structs::LineParseResult::LineParseResult;
-use crate::utils::parse_line::parse_line;
-use rayon::prelude::*;
 use rayon::slice::ParallelSliceMut;
 pub fn sort_by_body_size(log_selection: Vec<LineParseResult>, n: usize) {
     let mut parsed_lines = log_selection.clone();

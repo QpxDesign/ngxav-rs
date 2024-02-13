@@ -47,4 +47,7 @@ pub struct ArgParser {
     // plaintext search (faster)
     #[arg(short = 'p', long = "pt", action=ArgAction::SetTrue)]
     pub plain_text: Option<bool>,
+
+    #[arg(short = 'd', long = "ip_ses")]
+    pub ip_ses: Option<String>,
 }

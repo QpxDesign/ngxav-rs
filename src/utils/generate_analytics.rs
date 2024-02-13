@@ -73,14 +73,14 @@ Top 5 Hosts:
 Top 5 IP Addresses:
 {top5ips}",
         total_requests = stats.request_count,
-        top5requests = TopResultToString(top_requests, 5),
-        top5hosts = TopResultToString(top_hosts, 5),
-        top5ips = TopResultToString(top_ips, 5)
+        top5requests = top_result_to_string(top_requests, 5),
+        top5hosts = top_result_to_string(top_hosts, 5),
+        top5ips = top_result_to_string(top_ips, 5)
     )
 }
 
-fn TopResultToString(data: Vec<&structs::AnalyticsResult::TopResult>, n: usize) -> String {
-    let mut rel_data: Vec<&structs::AnalyticsResult::TopResult> = [].to_vec();
+fn top_result_to_string(data: Vec<&structs::AnalyticsResult::TopResult>, n: usize) -> String {
+    let rel_data: Vec<&structs::AnalyticsResult::TopResult>;
     if data.len() < n {
         rel_data = data[0..data.len()].to_vec();
     } else {

@@ -24,6 +24,8 @@ You can use the following flags to search using different parameters:
 - `-a/--analytics` - OPTIONAL, show a analytical view of your log selection, instead of just the raw logs
 - `-o/--referer` - OPTIONAL, only show requests that have specified http referer
 - `-x/--sa` - OPTIONAL, show session-based analytics (a session is a series of user activity (requests) within a specific timespan between interactions)
+- `-d/--ip_ses` - OPTIONAL, show a specific ip's sessions
+- `-p/--pt` - OPTIONAL, search with plaintext instead of regex (faster)
 
 #### Example Run: `ngxav -f access.log -a`
 
