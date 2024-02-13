@@ -22,9 +22,8 @@ You can use the following flags to search using different parameters:
 - `-t/--status`- OPTIONAL, find all entries for specific HTTP status code (like 200, 404, etc)
 - `-u/--unique` - OPTIONAL, only show latest request of each IP address within log selection
 - `-a/--analytics` - OPTIONAL, show a analytical view of your log selection, instead of just the raw logs
-- `-o/--referer` - OPTIONAL, only show requests that have specifced http referer
-- `-x/--sa` - OPTIONAL, show session-based analytics (a session is a series of user activity (requests) within a specific timespan between interactions)- `-t/--threads` - specify how many threads to use, will be all by default
-- `-c/--conservememory` - specify wether or not to read files line by line to conserve memory (can't use with analytic commands)
+- `-o/--referer` - OPTIONAL, only show requests that have specified http referer
+- `-x/--sa` - OPTIONAL, show session-based analytics (a session is a series of user activity (requests) within a specific timespan between interactions)
 
 #### Example Run: `ngxav -f access.log -a`
 

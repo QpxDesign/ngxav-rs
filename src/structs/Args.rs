@@ -4,8 +4,6 @@ use clap::Parser;
 #[derive(Parser, Clone)]
 #[command(version, about, long_about = None)]
 pub struct ArgParser {
-    /// Name of the person to greet
-
     #[arg(short = 'f', long = "file")]
     pub file: String,
 
@@ -27,6 +25,7 @@ pub struct ArgParser {
     #[arg(short = 't', long = "http_status")]
     pub http_status: Option<String>,
 
+    // HTTP referer (like google.com or instagram)
     #[arg(short = 'o', long = "referer")]
     pub referer: Option<String>,
 
@@ -45,12 +44,7 @@ pub struct ArgParser {
     #[arg(short = 'x', long = "sa", action=ArgAction::SetTrue)]
     pub session_analytics: Option<bool>,
 
+    // plaintext search (faster)
     #[arg(short = 'p', long = "pt", action=ArgAction::SetTrue)]
     pub plain_text: Option<bool>,
-
-    #[arg(short = 'i', long = "ip_ses")]
-    pub ip_session: Option<String>,
-
-    #[arg(short = 'c', long = "conservemem")]
-    pub conserve_memory: Option<bool>,
 }
