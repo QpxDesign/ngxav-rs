@@ -1,7 +1,6 @@
 use crate::utils::parse_line::parse_line;
-use crate::utils::{parse_line, sessionize::sessionize};
+use crate::utils::{parse_line, parse_nginx_time_format, sessionize::sessionize};
 use std::collections::HashMap;
-use std::path;
 
 struct HostPath {
     path: String,
@@ -10,8 +9,10 @@ struct HostPath {
 struct SessionAnalysisStats {
     total_count: i64,
     host_paths: HashMap<String, HostPath>,
-    average_request_count: usize,
+    average_request_count: i64,
     average_request_length: i64,
+    request_count_sum: i64,
+    request_length_sum: i64,
 }
 pub fn session_analytics(log_selection: Vec<crate::structs::LineParseResult::LineParseResult>) {
     let mut sessions = sessionize(log_selection);
@@ -19,12 +20,10 @@ pub fn session_analytics(log_selection: Vec<crate::structs::LineParseResult::Lin
         total_count: 0,
         host_paths: HashMap::new(),
         average_request_count: 0,
+        request_count_sum: 0,
+        request_length_sum: 0,
         average_request_length: 0,
     };
-
-    stats.average_request_count =
-        (stats.average_request_count as usize) / ((stats.total_count + 1) as usize);
-    stats.average_request_length = stats.average_request_length / (stats.total_count + 1);
 
     let mut ips_text: String = "".to_string();
     let mut ip_index = 0;
@@ -33,7 +32,20 @@ pub fn session_analytics(log_selection: Vec<crate::structs::LineParseResult::Lin
     sessions.reverse();
     for s in sessions {
         stats.total_count += 1;
+        stats.request_count_sum += i64::try_from(s.lines.len()).unwrap();
         let mut host_path: Vec<String> = [].to_vec();
+        for ses in s.sessions.clone() {
+            if ses.len() > 1 {
+                stats.request_length_sum += parse_nginx_time_format::parse_nginx_time_format(
+                    &parse_line(ses[ses.len() - 1].as_str()).time,
+                )
+                .timestamp()
+                    - parse_nginx_time_format::parse_nginx_time_format(
+                        &parse_line(ses[0].as_str()).time,
+                    )
+                    .timestamp();
+            }
+        }
         for l in s.lines {
             let a = parse_line(l.as_str()).host;
             if host_path.len() == 0 || host_path[host_path.len() - 1] != a {
@@ -75,7 +87,9 @@ pub fn session_analytics(log_selection: Vec<crate::structs::LineParseResult::Lin
     }
     let mut host_text: String = "".to_string();
     let mut h_index = 0;
-    let a: Vec<&HostPath> = stats.host_paths.values().collect();
+    let mut a: Vec<&HostPath> = stats.host_paths.values().collect();
+    a.sort_by_key(|a| a.count);
+    a.reverse();
     for path_entry in a {
         if h_index < 5 {
             host_text = host_text
@@ -108,8 +122,8 @@ IPS WITH MOST SESSIONS
 {ips_txt}
     ",
         stats_tc = stats.total_count,
-        stats_arc = stats.average_request_count,
-        stats_asl = stats.average_request_length,
+        stats_arc = stats.request_count_sum / stats.total_count,
+        stats_asl = (stats.request_length_sum / stats.total_count) / 60,
         h_text = host_text,
         ips_txt = ips_text
     )

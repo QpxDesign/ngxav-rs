@@ -18,12 +18,12 @@ pub fn keep_line(parsed_line: LineParseResult) -> bool {
         if !ARGS.plain_text.is_none() && ARGS.plain_text == Some(true) {
             if !parsed_line
                 .full_text
-                .contains(&ARGS.search.clone().unwrap().to_string())
+                .contains(&ARGS.search.to_owned().unwrap().to_string())
             {
                 return false;
             }
         } else {
-            let re = Regex::new(&ARGS.search.clone().unwrap().to_string()).unwrap();
+            let re = Regex::new(&ARGS.search.to_owned().unwrap().to_string()).unwrap();
             if !re.is_match(&parsed_line.full_text) {
                 return false;
             }
@@ -31,14 +31,14 @@ pub fn keep_line(parsed_line: LineParseResult) -> bool {
     }
     if !ARGS.start_date.is_none() && ARGS.end_date.is_none() {
         if parse_nginx_time_format(&parsed_line.time)
-            < parse_input_time(ARGS.start_date.clone().unwrap(), tz.to_string())
+            < parse_input_time(ARGS.start_date.to_owned().unwrap(), tz.to_string())
         {
             return false;
         }
     }
     if !ARGS.end_date.is_none() && ARGS.start_date.is_none() {
         if parse_nginx_time_format(&parsed_line.time)
-            > parse_input_time(ARGS.end_date.clone().unwrap(), tz.to_string())
+            > parse_input_time(ARGS.end_date.to_owned().unwrap(), tz.to_string())
         {
             return false;
         }
@@ -46,22 +46,26 @@ pub fn keep_line(parsed_line: LineParseResult) -> bool {
     if !ARGS.start_date.is_none()
         && !ARGS.end_date.is_none()
         && (parse_nginx_time_format(&parsed_line.time)
-            > parse_input_time(ARGS.end_date.clone().unwrap(), tz.to_string())
+            > parse_input_time(ARGS.end_date.to_owned().unwrap(), tz.to_string())
             || parse_nginx_time_format(&parsed_line.time)
-                < parse_input_time(ARGS.start_date.clone().unwrap(), tz.to_string()))
+                < parse_input_time(ARGS.start_date.to_owned().unwrap(), tz.to_string()))
     {
         return false;
     }
-    if !ARGS.host.is_none() && parsed_line.host != ARGS.host.clone().unwrap() {
+    if !ARGS.host.is_none() && parsed_line.host != ARGS.host.to_owned().unwrap() {
         return false;
     }
-    if !ARGS.request.is_none() && !parsed_line.request.contains(&ARGS.request.clone().unwrap()) {
+    if !ARGS.request.is_none()
+        && !parsed_line
+            .request
+            .contains(&ARGS.request.to_owned().unwrap())
+    {
         return false;
     }
-    if !ARGS.http_status.is_none() && parsed_line.status != ARGS.http_status.clone().unwrap() {
+    if !ARGS.http_status.is_none() && parsed_line.status != ARGS.http_status.to_owned().unwrap() {
         return false;
     }
-    if !ARGS.referer.is_none() && parsed_line.referer != ARGS.referer.clone().unwrap() {
+    if !ARGS.referer.is_none() && parsed_line.referer != ARGS.referer.to_owned().unwrap() {
         return false;
     }
     let start = SystemTime::now();

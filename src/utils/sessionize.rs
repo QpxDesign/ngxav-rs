@@ -19,7 +19,7 @@ pub fn sessionize(
         if parsed_line.ip_address != "-" {
             let time: DateTime<Utc> = parse_nginx_time_format(parsed_line.time.as_str());
             if !occurrences.contains_key(&parsed_line.ip_address) {
-                let cl = parsed_line.ip_address.clone();
+                let cl = parsed_line.ip_address.to_owned();
                 let mut l = Vec::new();
                 l.push(parsed_line.full_text);
                 let mut t = Vec::new();
@@ -44,31 +44,24 @@ pub fn sessionize(
                     .unwrap()
                     .times
                     .push(time);
-                let entry: Option<&SessionOccurrences> = occurrences.get(&parsed_line.ip_address);
-                if entry.is_some() {
-                    let mut sessions: Vec<Vec<String>> = Vec::new();
-                    let mut index = 0;
-                    let mut tmp: Vec<String> = Vec::new();
-                    for l in &entry.unwrap().times {
-                        if index == 0 {
-                            tmp.push(entry.unwrap().lines[0].clone());
-                        } else if l.timestamp() - entry.unwrap().times[index - 1].timestamp()
-                            < session_cutoff_min * 60
-                        {
-                            tmp.push(entry.unwrap().lines[index].clone());
-                        } else {
-                            sessions.push(tmp.clone());
-
-                            tmp = Vec::new();
-                        }
-                        index += 1;
-                    }
-                    occurrences
-                        .get_mut(&parsed_line.ip_address)
-                        .unwrap()
-                        .sessions = sessions;
-                }
             }
+        }
+    }
+
+    for entry in occurrences.values_mut() {
+        let mut index = 0;
+        let mut tmp: Vec<String> = Vec::new();
+        for l in &entry.times {
+            if index == 0 {
+                tmp.push(entry.lines[0].clone());
+            } else if l.timestamp() - entry.times[index - 1].timestamp() < session_cutoff_min * 60 {
+                tmp.push(entry.lines[index].clone());
+            } else {
+                entry.sessions.push(tmp);
+
+                tmp = Vec::new();
+            }
+            index += 1;
         }
     }
     return occurrences.into_values().collect();
