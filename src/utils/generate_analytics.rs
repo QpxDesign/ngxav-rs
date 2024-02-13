@@ -1,9 +1,9 @@
 #[path = "../structs/mod.rs"]
 mod structs;
-use crate::utils::parse_line::parse_line;
+use crate::structs::LineParseResult::LineParseResult;
 use std::collections::HashMap;
 
-pub fn generate_analytical_output(log_selection: Vec<std::string::String>) {
+pub fn generate_analytical_output(log_selection: Vec<LineParseResult>) {
     let mut stats: structs::AnalyticsResult::AnalyticsResult =
         structs::AnalyticsResult::AnalyticsResult {
             request_count: 0,
@@ -11,8 +11,7 @@ pub fn generate_analytical_output(log_selection: Vec<std::string::String>) {
             top_hosts: HashMap::new(),
             top_ips: HashMap::new(),
         };
-    for line in log_selection {
-        let parsed_line = parse_line(line.as_str()).clone();
+    for parsed_line in log_selection {
         let request = parsed_line.request.clone();
         let host = parsed_line.host.clone();
         let ip = parsed_line.ip_address.clone();

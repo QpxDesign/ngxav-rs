@@ -1,13 +1,12 @@
 #[path = "../structs/mod.rs"]
 mod structs;
+use crate::structs::LineParseResult::LineParseResult;
 use crate::utils::parse_line::parse_line;
 use rayon::prelude::*;
 use rayon::slice::ParallelSliceMut;
-pub fn sort_by_body_size(log_selection: Vec<String>, n: usize) {
-    let mut parsed_lines: Vec<crate::structs::LineParseResult::LineParseResult> = log_selection
-        .par_iter()
-        .map(|l: &String| parse_line(l))
-        .collect();
+pub fn sort_by_body_size(log_selection: Vec<LineParseResult>, n: usize) {
+    let mut parsed_lines = log_selection.clone();
+    parsed_lines.par_sort_by_key(|a: &LineParseResult| a.body_bytes_sent.clone());
 
     parsed_lines.par_sort_by_key(|a| a.body_bytes_sent.clone());
     if parsed_lines.len() < n {

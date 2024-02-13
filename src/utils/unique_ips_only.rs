@@ -1,14 +1,16 @@
+#[path = "../structs/mod.rs"]
+mod structs;
+use crate::structs::LineParseResult::LineParseResult;
 use std::collections::HashMap;
 
-pub fn unique_ips_only(lines: Vec<std::string::String>) -> Vec<std::string::String> {
-    let mut occurrences: HashMap<String, String> = HashMap::new();
+pub fn unique_ips_only(parsed_lines: Vec<LineParseResult>) -> Vec<LineParseResult> {
+    let mut occurrences: HashMap<String, LineParseResult> = HashMap::new();
 
-    for line in lines {
-        let unique_key = line.split(" ").collect::<Vec<&str>>()[0];
-        if occurrences.contains_key(unique_key) == false {
-            occurrences.insert(unique_key.to_string(), line.to_string());
+    for line in parsed_lines {
+        if occurrences.contains_key(&line.ip_address) == false {
+            occurrences.insert(line.ip_address.clone(), line.clone());
         }
     }
-    let a = occurrences.values().cloned().collect();
+    let a: Vec<LineParseResult> = occurrences.values().cloned().collect();
     return a;
 }

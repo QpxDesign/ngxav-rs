@@ -9,4 +9,5 @@ pub struct LineParseResult {
     pub body_bytes_sent: i64,
     pub request_time: String,
     pub user_agent: String,
+    pub full_text: String,
 }

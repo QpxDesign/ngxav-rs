@@ -22,27 +22,6 @@ pub fn session_analytics(log_selection: Vec<std::string::String>) {
         average_request_length: 0,
     };
 
-    stats.average_request_count =
-        (stats.average_request_count as usize) / ((stats.total_count + 1) as usize);
-    stats.average_request_length = stats.average_request_length / (stats.total_count + 1);
-
-    let mut ips_text: String = "".to_string();
-    let mut ip_index = 0;
-
-    sessions.sort_by_key(|a| a.sessions.len());
-    sessions.reverse();
-    for s in sessions {
-        if ip_index <= 10 {
-            ips_text = ips_text
-                + format!(
-                    "- {ip} - {num}\n",
-                    ip = s.ip_address,
-                    num = s.sessions.len()
-                )
-                .as_str();
-            ip_index += 1
-        }
-    }
     println!(
         "
 SESSION STATS
@@ -59,7 +38,7 @@ IPS WITH MOST SESSIONS
         stats_tc = stats.total_count,
         stats_arc = stats.average_request_count,
         stats_asl = stats.average_request_length,
-        ips_txt = ips_text
+        ips_txt = "a"
     )
 }
 

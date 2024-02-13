@@ -7,19 +7,23 @@ mod structs;
 
 use std::time::{SystemTime, UNIX_EPOCH};
 
-pub fn keep_line(line: String, AArgs: &ArgParser) -> bool {
-    let parsed_line = crate::utils::parse_line::parse_line(&line);
+use crate::structs::LineParseResult::LineParseResult;
+
+pub fn keep_line(parsed_line: LineParseResult, AArgs: &ArgParser) -> bool {
     let args = AArgs.clone();
     let tz = parsed_line.time.split(" ").collect::<Vec<_>>()[1];
 
     if !args.search.is_none() {
         if !args.plain_text.is_none() && args.plain_text == Some(true) {
-            if !line.contains(&args.search.unwrap().to_string()) {
+            if !parsed_line
+                .full_text
+                .contains(&args.search.unwrap().to_string())
+            {
                 return false;
             }
         } else {
             let re = Regex::new(&args.search.clone().unwrap().to_string()).unwrap();
-            if !re.is_match(&line) {
+            if !re.is_match(&parsed_line.full_text) {
                 return false;
             }
         }
