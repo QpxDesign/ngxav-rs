@@ -4,7 +4,7 @@
 
 ### Install
 
-Run this command to install the package from pip: `cargo install ngxav`
+Run this command to install the package from cargo: `cargo install ngxav`
 
 ### Usage
 
