@@ -8,7 +8,7 @@ pub fn unique_ips_only(parsed_lines: Vec<LineParseResult>) -> Vec<LineParseResul
 
     for line in parsed_lines {
         if occurrences.contains_key(&line.ip_address) == false {
-            occurrences.insert(line.ip_address.clone(), line.clone());
+            occurrences.insert(line.ip_address.clone(), line);
         }
     }
     let a: Vec<LineParseResult> = occurrences.values().cloned().collect();

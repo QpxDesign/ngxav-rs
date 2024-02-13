@@ -27,7 +27,7 @@ fn main() {
     let mut kel: Vec<LineParseResult> = parsed_lines
         .into_par_iter()
         .filter(|p: &crate::structs::LineParseResult::LineParseResult| {
-            utils::keep_line::keep_line(p.clone(), &args) == true
+            utils::keep_line::keep_line(p.clone()) == true
         })
         .collect();
     if !args.unique.is_none() && args.unique == Some(true) {
