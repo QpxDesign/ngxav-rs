@@ -1,18 +1,21 @@
 #[path = "../structs/mod.rs"]
 mod structs;
+use crate::utils::parse_line::parse_line;
+use rayon::prelude::*;
 use rayon::slice::ParallelSliceMut;
+pub fn sort_by_body_size(log_selection: Vec<String>, n: usize) {
+    let mut parsed_lines: Vec<crate::structs::LineParseResult::LineParseResult> = log_selection
+        .par_iter()
+        .map(|l: &String| parse_line(l))
+        .collect();
 
-use crate::structs::LineParseResult::LineParseResult;
-
-pub fn sort_by_body_size(log_selection: Vec<LineParseResult>, n: usize) {
-    let mut ls = log_selection.clone();
-    ls.par_sort_by_key(|a| a.body_bytes_sent.clone());
-    if ls.len() < n {
-        ls = ls[0..ls.len()].to_vec();
+    parsed_lines.par_sort_by_key(|a| a.body_bytes_sent.clone());
+    if parsed_lines.len() < n {
+        parsed_lines = parsed_lines[0..parsed_lines.len()].to_vec();
     } else {
-        ls = ls[0..n].to_vec();
+        parsed_lines = parsed_lines[0..n].to_vec();
     }
-    for line in ls {
+    for line in parsed_lines {
         println!(
             "{size_mb} {ip} {host} {request}",
             size_mb = bytes_size_formatter(line.body_bytes_sent),
