@@ -21,7 +21,9 @@ fn main() {
             let mut new_line: String = line.clone().to_string();
             new_line = str::replace(&new_line, ip, ip_conversion_table.get(ip).expect("WOOP"));
             new_line.push_str("\n");
-            ans.push_str(&new_line.as_str());
+            if new_line.len() > 20 {
+                ans.push_str(&new_line.as_str());
+            }
         }
     }
     fs::write(args[1].clone(), ans);

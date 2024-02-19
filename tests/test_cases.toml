@@ -1,0 +1,88 @@
+[[test_cases]]
+name = "Large File/Normal"
+run_type = "output"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log -m 10"
+expect = """
+12 MB 523401 media.quinnpatwardhan.com "GET /images/JJkT7kIQ.jpg HTTP/1.1"
+12 MB 523401 media.quinnpatwardhan.com "GET /images/JJkT7kIQ.jpg HTTP/1.1"
+12 MB 523401 media.quinnpatwardhan.com "GET /images/JJkT7kIQ.jpg HTTP/1.1"
+12 MB 65854 media.quinnpatwardhan.com "GET /images/JJkT7kIQ.jpg HTTP/1.1"
+7 MB 523401 quinnpatwardhan.com "GET /Assets/density_matters.png HTTP/1.1"
+7 MB 90918 quinnpatwardhan.com "GET /Assets/density_matters.png HTTP/1.1"
+7 MB 610754 quinnpatwardhan.com "GET /Assets/density_matters.png HTTP/1.1"
+7 MB 593717 www.quinnpatwardhan.com "GET /Assets/density_matters.png HTTP/1.1"
+7 MB 623417 www.quinnpatwardhan.com "GET /Assets/density_matters.png HTTP/1.1"
+7 MB 353509 quinnpatwardhan.com "GET /Assets/density_matters.png HTTP/1.1"
+"""
+
+[[test_cases]]
+name = "Analytics/Normal"
+run_type = "checksum"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log -a"
+expect = "bc0c96a5bc426fd0527721b28c793c4c"
+
+[[test_cases]]
+name = "Unique/Normal"
+run_type = "lines_count"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log -u"
+expect = "6399"
+
+[[test_cases]]
+name = "Unique/Search"
+run_type = "lines_count"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log -s CFNetwork -u"
+expect = "4185"
+
+[[test_cases]]
+name = "StartDate"
+run_type = "lines_count"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log -b 21/Jan/2024:18:00:00"
+expect = "751"
+
+[[test_cases]]
+name = "EndDate"
+run_type = "lines_count"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log -e 21/Jan/2024:18:00:00"
+expect = "604431"
+
+[[test_cases]]
+name = "StartAndEndDate"
+run_type = "lines_count"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log -b 21/Jan/2024:16:00:00 -e 21/Jan/2024:18:00:00"
+expect = "12263"
+
+[[test_cases]]
+name = "Host"
+run_type = "lines_count"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log -q densitymatters.org"
+expect = "8889"
+
+[[test_cases]]
+name = "Request"
+run_type = "lines_count"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log -r get-blog-posts"
+expect = "105"
+
+[[test_cases]]
+name = "Status"
+run_type = "lines_count"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log -t 502"
+expect = "115"
+
+[[test_cases]]
+name = "Referer"
+run_type = "lines_count"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log -o https://www.google.com/"
+expect = "7"
+
+[[test_cases]]
+name = "SessionAnalyticsNoError"
+run_type = "lines_count"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log -x"
+expect = "31"
+
+[[test_cases]]
+name = "IpSession"
+run_type = "checksum"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log -d 20829"
+expect = "ad7ba0ac82322c0219fdc60c0c6cea98"
