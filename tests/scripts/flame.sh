@@ -1,0 +1,1 @@
+sudo cargo flamegraph -- -f tests/access.log -s png -u
