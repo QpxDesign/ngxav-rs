@@ -24,11 +24,13 @@ You can use the following flags to search using different parameters:
 - `-a/--analytics` - OPTIONAL, show a analytical view of your log selection, instead of just the raw logs
 - `-o/--referer` - OPTIONAL, only show requests that have specified http referer
 - `-x/--sa` - OPTIONAL, show session-based analytics (a session is a series of user activity (requests) within a specific timespan between interactions)
+- `-l/--lst` - OPTIONAL, show requests only from the last n minutes
+-`-m/--large <n>` - OPTIONAL, show the largest N requests (request path and ip)
 - `-d/--ip_ses` - OPTIONAL, show a specific ip's sessions
 - `-p/--pt` - OPTIONAL, search with plaintext instead of regex (faster)
 - `-z/--browser` - OPTIONAL, search for requests coming from specific browser
 - `-v/--os` - OPTIONAL, search for requests coming from specific operating system
-- `-g/--bit <true/false>` OPTIONAL, search for requests that are/aren't from bots (identified via user agent)
+- `-g/--bot <true/false>` OPTIONAL, search for requests that are/aren't from bots (identified via user agent)
 - `-j/--device_category` OPTIONAL, search for requests from certain devices (pc", "smartphone", "mobilephone", "appliance", "crawler", "misc", "unknown")
 #### Example Run: `ngxav -f access.log -a`
 
@@ -87,6 +89,10 @@ We welcome contributions and bug reports/issues! Just submit a pull request to t
 - [clap](https://docs.rs/clap/latest/clap/)
 - [rayon](https://docs.rs/rayon/latest/rayon/)
 - [regex](https://docs.rs/regex/latest/regex/)
+
+### Test Usage
+Build the package with the release flag `cargo build --release`
+Run the tests: `cd tests && cargo run`
 
 ### License (MIT)
 

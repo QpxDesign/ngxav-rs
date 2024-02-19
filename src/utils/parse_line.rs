@@ -9,7 +9,6 @@ lazy_static! {
 pub fn parse_line(line: &str) -> crate::structs::LineParseResult::LineParseResult {
     let matches: Vec<&str> = R.find_iter(line).map(|mat| mat.as_str()).collect();
     let fields = line.split(" ").collect::<Vec<_>>();
-
     return crate::structs::LineParseResult::LineParseResult {
         ip_address: fields[0].to_string(),
         time: fields[3].replace("[", "") + " " + &fields[4].replace("]", ""),
