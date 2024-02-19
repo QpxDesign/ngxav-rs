@@ -3,6 +3,7 @@ pub mod keep_line;
 pub mod parse_input_time;
 pub mod parse_line;
 pub mod parse_nginx_time_format;
+pub mod parse_user_agent;
 pub mod session_analytics;
 pub mod sessionize;
 pub mod sessions_from_ip;

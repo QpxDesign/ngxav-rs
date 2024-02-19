@@ -1,10 +1,12 @@
 use crate::structs::Args::ArgParser;
 use crate::utils::parse_input_time::parse_input_time;
 use crate::utils::parse_nginx_time_format::parse_nginx_time_format;
+use crate::utils::parse_user_agent::parse_user_agent;
 use regex::Regex;
 #[path = "../structs/mod.rs"]
 mod structs;
 use crate::structs::LineParseResult::LineParseResult;
+use crate::structs::UserAgentParseResult;
 use clap::Parser;
 use lazy_static::lazy_static;
 
@@ -78,6 +80,29 @@ pub fn keep_line(parsed_line: LineParseResult) -> bool {
         if parse_nginx_time_format(&parsed_line.time).timestamp() < (epoch_seconds as i64) {
             return false;
         }
+    }
+    let parsed_ua = parse_user_agent(parsed_line.user_agent);
+    if ARGS.browser.is_some()
+        && parsed_ua.browser.to_lowercase() != ARGS.browser.to_owned().expect("WOOP").to_lowercase()
+    {
+        return false;
+    }
+    if ARGS.os.is_some()
+        && parsed_ua.operating_system.to_lowercase()
+            != ARGS.os.to_owned().expect("WOOP").to_lowercase()
+    {
+        return false;
+    }
+    if ARGS.device_category.is_some()
+        && ARGS.device_category.to_owned().unwrap() != parsed_ua.category
+    {
+        return false;
+    }
+    if ARGS.bot.is_some() && ARGS.bot.clone().unwrap() == false && parsed_ua.isBot == true {
+        return false;
+    }
+    if ARGS.bot.is_some() && ARGS.bot.clone().unwrap() == true && parsed_ua.isBot == false {
+        return false;
     }
 
     return true;

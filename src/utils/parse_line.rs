@@ -23,7 +23,7 @@ pub fn parse_line(line: &str) -> crate::structs::LineParseResult::LineParseResul
             0
         },
         request_time: "0".to_string(),
-        user_agent: matches[2].to_string(),
+        user_agent: matches[3].to_string(),
         full_text: line.to_string(),
     };
 }

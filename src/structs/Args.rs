@@ -50,4 +50,16 @@ pub struct ArgParser {
 
     #[arg(short = 'd', long = "ip_ses")]
     pub ip_ses: Option<String>,
+
+    #[arg(short = 'z', long = "browser")]
+    pub browser: Option<String>,
+
+    #[arg(short = 'v', long = "os")]
+    pub os: Option<String>,
+
+    #[arg(short = 'g', long = "bot")]
+    pub bot: Option<bool>,
+
+    #[arg(short = 'j', long = "device_category")]
+    pub device_category: Option<String>,
 }
