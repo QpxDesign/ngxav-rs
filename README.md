@@ -26,7 +26,10 @@ You can use the following flags to search using different parameters:
 - `-x/--sa` - OPTIONAL, show session-based analytics (a session is a series of user activity (requests) within a specific timespan between interactions)
 - `-d/--ip_ses` - OPTIONAL, show a specific ip's sessions
 - `-p/--pt` - OPTIONAL, search with plaintext instead of regex (faster)
-
+- `-z/--browser` - OPTIONAL, search for requests coming from specific browser
+- `-v/--os` - OPTIONAL, search for requests coming from specific operating system
+- `-g/--bit <true/false>` OPTIONAL, search for requests that are/aren't from bots (identified via user agent)
+- `-j/--device_category` OPTIONAL, search for requests from certain devices (pc", "smartphone", "mobilephone", "appliance", "crawler", "misc", "unknown")
 #### Example Run: `ngxav -f access.log -a`
 
 Output:
