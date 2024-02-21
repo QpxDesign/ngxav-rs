@@ -31,19 +31,32 @@ pub fn session_analytics(log_selection: Vec<crate::structs::LineParseResult::Lin
     sessions.sort_by_key(|a| a.sessions.len());
     sessions.reverse();
     for s in sessions {
-        stats.total_count += 1;
         stats.request_count_sum += i64::try_from(s.lines.len()).unwrap();
         let mut host_path: Vec<String> = [].to_vec();
         for ses in s.sessions.clone() {
+            stats.total_count += 1;
             if ses.len() > 1 {
-                stats.request_length_sum += parse_nginx_time_format::parse_nginx_time_format(
-                    &parse_line(ses[ses.len() - 1].as_str()).time,
+                let a = (parse_nginx_time_format::parse_nginx_time_format(
+                    &parse_line(ses[0].as_str()).time,
                 )
                 .timestamp()
                     - parse_nginx_time_format::parse_nginx_time_format(
+                        &parse_line(ses[ses.len() - 1].as_str()).time,
+                    )
+                    .timestamp())
+                .abs();
+
+                if a < 60 * 60 {
+                    stats.request_length_sum += (parse_nginx_time_format::parse_nginx_time_format(
                         &parse_line(ses[0].as_str()).time,
                     )
-                    .timestamp();
+                    .timestamp()
+                        - parse_nginx_time_format::parse_nginx_time_format(
+                            &parse_line(ses[ses.len() - 1].as_str()).time,
+                        )
+                        .timestamp())
+                    .abs();
+                }
             }
         }
         for l in s.lines {
@@ -51,15 +64,6 @@ pub fn session_analytics(log_selection: Vec<crate::structs::LineParseResult::Lin
             if host_path.len() == 0 || host_path[host_path.len() - 1] != a {
                 host_path.push(a);
             }
-            /*
-                   if str(host_path) not in stats["host_paths"]:
-                stats["host_paths"][str(host_path)] = {
-                    "path": str(host_path),
-                    "count":1,
-                }
-            else:
-                stats["host_paths"][str(host_path)]["count"] += 1
-            */
         }
         let str_key = &StringVecToKey(host_path);
         if !stats.host_paths.contains_key(str_key) {
@@ -123,7 +127,7 @@ IPS WITH MOST SESSIONS
     ",
         stats_tc = stats.total_count,
         stats_arc = stats.request_count_sum / stats.total_count,
-        stats_asl = (stats.request_length_sum / stats.total_count) / 60,
+        stats_asl = ((stats.request_length_sum / 60) / stats.total_count),
         h_text = host_text,
         ips_txt = ips_text
     )

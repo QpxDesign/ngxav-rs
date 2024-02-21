@@ -7,6 +7,7 @@ pub fn generate_analytical_output(log_selection: Vec<LineParseResult>) {
     let mut stats: structs::AnalyticsResult::AnalyticsResult =
         structs::AnalyticsResult::AnalyticsResult {
             request_count: 0,
+            total_bytes_sent: 0,
             top_requests: HashMap::new(),
             top_hosts: HashMap::new(),
             top_ips: HashMap::new(),
@@ -16,6 +17,7 @@ pub fn generate_analytical_output(log_selection: Vec<LineParseResult>) {
         let host = parsed_line.host.clone();
         let ip = parsed_line.ip_address.clone();
         stats.request_count += 1;
+        stats.total_bytes_sent += parsed_line.body_bytes_sent.abs();
         if stats.top_requests.contains_key(&parsed_line.request) == false {
             stats.top_requests.insert(
                 parsed_line.request.to_string(),
@@ -65,6 +67,7 @@ pub fn generate_analytical_output(log_selection: Vec<LineParseResult>) {
         "
     ===~ LOG SELECTION STATS ~===
 Total Requests: {total_requests}
+Total Data Sent: {td}
 
 Top 5 Requests:
 {top5requests}
@@ -73,6 +76,7 @@ Top 5 Hosts:
 Top 5 IP Addresses:
 {top5ips}",
         total_requests = stats.request_count,
+        td = bytes_size_formatter(stats.total_bytes_sent),
         top5requests = top_result_to_string(top_requests, 5),
         top5hosts = top_result_to_string(top_hosts, 5),
         top5ips = top_result_to_string(top_ips, 5)
@@ -92,4 +96,15 @@ fn top_result_to_string(data: Vec<&structs::AnalyticsResult::TopResult>, n: usiz
         ans += &format!("- {t} ~ {c} \n", t = line.text, c = line.count).to_string();
     }
     return ans;
+}
+
+fn bytes_size_formatter(b: i64) -> String {
+    let f = b.abs();
+    if f > 1024 * 1024 * 1024 {
+        return format!("{num} GB", num = f / 1024 / 1024 / 1024);
+    }
+    if f > 1024 * 1024 {
+        return format!("{num} MB", num = f / 1024 / 1024);
+    }
+    return format!("{num} KB", num = f / 1024);
 }
