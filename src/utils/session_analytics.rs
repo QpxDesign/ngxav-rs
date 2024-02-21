@@ -29,7 +29,7 @@ pub fn session_analytics(log_selection: Vec<crate::structs::LineParseResult::Lin
     let mut ip_index = 0;
 
     sessions.sort_by_key(|a| a.sessions.len());
-    //sessions.reverse();
+    sessions.reverse();
     for s in sessions {
         stats.total_count += 1;
         stats.request_count_sum += i64::try_from(s.lines.len()).unwrap();
