@@ -51,14 +51,21 @@ pub fn sessionize(
     for entry in occurrences.values_mut() {
         let mut index = 0;
         let mut tmp: Vec<String> = Vec::new();
+        if &entry.times.len() != &entry.lines.len() {
+            println!("{}", "CANARY");
+        }
         for l in &entry.times {
-            if index == 0 {
+            if index + 1 == entry.times.len() {
                 tmp.push(entry.lines[0].clone());
-            } else if l.timestamp() - entry.times[index - 1].timestamp() < session_cutoff_min * 60 {
+                entry.sessions.push(tmp.clone());
+                tmp = Vec::new();
+            } else if index == 0 {
+                tmp.push(entry.lines[0].clone());
+            } else if l.timestamp() - entry.times[index - 1].timestamp() < (session_cutoff_min * 60)
+            {
                 tmp.push(entry.lines[index].clone());
             } else {
-                entry.sessions.push(tmp);
-
+                entry.sessions.push(tmp.clone());
                 tmp = Vec::new();
             }
             index += 1;
