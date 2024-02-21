@@ -62,4 +62,7 @@ pub struct ArgParser {
 
     #[arg(short = 'j', long = "device_category")]
     pub device_category: Option<String>,
+
+    #[arg(short = 'w', long = "su", action=ArgAction::SetTrue)]
+    pub session_unqiue: Option<bool>,
 }

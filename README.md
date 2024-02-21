@@ -32,6 +32,7 @@ You can use the following flags to search using different parameters:
 - `-v/--os` - OPTIONAL, search for requests coming from specific operating system
 - `-g/--bot <true/false>` OPTIONAL, search for requests that are/aren't from bots (identified via user agent)
 - `-j/--device_category` OPTIONAL, search for requests from certain devices (pc", "smartphone", "mobilephone", "appliance", "crawler", "misc", "unknown")
+- `-w/--su` OPTIONAL, find lines that are unique by session for a given log selection
 #### Example Run: `ngxav -f access.log -a`
 
 Output:

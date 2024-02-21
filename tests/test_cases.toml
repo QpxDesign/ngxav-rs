@@ -86,3 +86,9 @@ name = "IpSession"
 run_type = "checksum"
 cmd = "../target/release/ngxav -f ../tests/logs/750k.log -d 20829"
 expect = "ad7ba0ac82322c0219fdc60c0c6cea98"
+
+[[test_cases]]
+name = "SessionUnique"
+run_type = "checksum"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log --su -s png"
+expect = "b67ea7436135a11ed9565ee4ed27df9c"

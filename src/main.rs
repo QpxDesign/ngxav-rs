@@ -41,6 +41,8 @@ fn main() {
         utils::sort_by_body_size::sort_by_body_size(kel, args.large.unwrap());
     } else if !args.ip_ses.is_none() {
         utils::sessions_from_ip::sessions_from_ip(kel, args.ip_ses.unwrap());
+    } else if !args.session_unqiue.is_none() && args.session_unqiue == Some(true) {
+        utils::session_unique::session_unique(kel);
     } else {
         for line in sort_by_date(kel) {
             println!("{}", line.full_text + "\n");

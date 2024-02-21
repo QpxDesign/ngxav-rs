@@ -5,6 +5,7 @@ pub mod parse_line;
 pub mod parse_nginx_time_format;
 pub mod parse_user_agent;
 pub mod session_analytics;
+pub mod session_unique;
 pub mod sessionize;
 pub mod sessions_from_ip;
 pub mod sort_by_body_size;
