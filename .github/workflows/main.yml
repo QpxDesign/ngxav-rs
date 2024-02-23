@@ -1,6 +1,7 @@
 jobs:
   example-job:
     runs-on: ubuntu-latest
+    on: push
     steps:
       - run: cargo build -r 
       - run: cd tests
