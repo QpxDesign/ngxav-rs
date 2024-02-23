@@ -1,6 +1,7 @@
 ## NGINX Log Stats
 
 ### A multi-threaded, deep-search capable, full-featured, and intelligent NGINX log parser
+Depending on parameters, NGXAV can parse through NGINX log lines at between 2-5 million lines/second, making it one of, if not the, fastest NGINX log parsers out there. It can search across sessions, allowing for a deeper search, rather than just the typical line-by-line approach. NGXAV has features aimed towards detecting and preventing large file requests, seeing which ip(s) are most responible for traffic, user-agent parsing (thanks to woothee), and much, much more. It is fully open source, and is rewritten entirely in RUST.
 
 ### Install
 
@@ -90,9 +91,16 @@ We welcome contributions and bug reports/issues! Just submit a pull request to t
 - [clap](https://docs.rs/clap/latest/clap/)
 - [rayon](https://docs.rs/rayon/latest/rayon/)
 - [regex](https://docs.rs/regex/latest/regex/)
+- [woothee](https://github.com/woothee/woothee-rust)
+- [isbot](https://crates.io/crates/isbot)
+- [colorize](https://crates.io/crates/colorized)
+- [async-process](https://crates.io/crates/async-process)
+- [tokio](https://crates.io/crates/tokio)
+- [md5sum](https://crates.io/crates/md5)
+- [toml](https://github.com/toml-lang/toml)
 
 ### Test Usage
-Build the package with the release flag `cargo build --release`
+Build the package with the release flag `cargo build --release` \
 Run the tests: `cd tests && cargo run`
 
 ### License (MIT)

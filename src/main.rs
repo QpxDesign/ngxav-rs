@@ -20,6 +20,12 @@ fn lines_from_file(filename: impl AsRef<Path>) -> io::Result<Vec<String>> {
 }
 fn main() {
     let args: crate::structs::Args::ArgParser = ArgParser::parse();
+    if args.thread_count.is_some() {
+        rayon::ThreadPoolBuilder::new()
+            .num_threads(args.thread_count.unwrap().try_into().expect("WOMP WOMP"))
+            .build_global()
+            .unwrap();
+    }
     let lines: Vec<String> = lines_from_file(args.file.clone()).expect("should read");
     let parsed_lines: Vec<crate::structs::LineParseResult::LineParseResult> =
         lines.par_iter().map(|l: &String| parse_line(l)).collect();

@@ -65,4 +65,7 @@ pub struct ArgParser {
 
     #[arg(short = 'w', long = "su", action=ArgAction::SetTrue)]
     pub session_unqiue: Option<bool>,
+
+    #[arg(short = 'i', long = "threads")]
+    pub thread_count: Option<i64>,
 }

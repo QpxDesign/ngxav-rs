@@ -13,6 +13,7 @@ use lazy_static::lazy_static;
 use std::time::{SystemTime, UNIX_EPOCH};
 lazy_static! {
     static ref ARGS: crate::structs::Args::ArgParser = ArgParser::parse();
+    static ref SEARCH_REGEX: Regex = Regex::new(&ARGS.search.clone().unwrap().to_string()).unwrap();
 }
 pub fn keep_line(parsed_line: &LineParseResult) -> bool {
     let tz = parsed_line.time.split(" ").collect::<Vec<_>>()[1];
@@ -25,8 +26,7 @@ pub fn keep_line(parsed_line: &LineParseResult) -> bool {
                 return false;
             }
         } else {
-            let re = Regex::new(&ARGS.search.clone().unwrap().to_string()).unwrap();
-            if !re.is_match(&parsed_line.full_text) {
+            if !SEARCH_REGEX.is_match(&parsed_line.full_text) {
                 return false;
             }
         }
@@ -82,6 +82,13 @@ pub fn keep_line(parsed_line: &LineParseResult) -> bool {
         if parse_nginx_time_format(&parsed_line.time).timestamp() < (epoch_seconds as i64) {
             return false;
         }
+    }
+    if ARGS.browser.is_none()
+        && ARGS.os.is_none()
+        && ARGS.device_category.is_none()
+        && ARGS.bot.is_none()
+    {
+        return true;
     }
     let parsed_ua = parse_user_agent(parsed_line.user_agent.clone());
     if ARGS.browser.is_some()
