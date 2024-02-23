@@ -1,0 +1,7 @@
+jobs:
+  example-job:
+    runs-on: ubuntu-latest
+    steps:
+      - run: cargo build -r 
+      - run: cd tests
+      - run: cargo run
