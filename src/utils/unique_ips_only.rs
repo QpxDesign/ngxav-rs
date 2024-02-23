@@ -11,6 +11,5 @@ pub fn unique_ips_only(parsed_lines: Vec<LineParseResult>) -> Vec<LineParseResul
             occurrences.insert(line.ip_address.clone(), line);
         }
     }
-    let a: Vec<LineParseResult> = occurrences.values().cloned().collect();
-    return a;
+    return occurrences.into_iter().map(|(_, v)| v).collect();
 }

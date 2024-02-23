@@ -11,7 +11,7 @@ use crate::utils::parse_line::parse_line;
 
 use std::{
     fs::File,
-    io::{self, BufRead, BufReader},
+    io::{self, BufRead, BufReader, Write},
     path::Path,
 };
 
@@ -23,11 +23,11 @@ fn main() {
     let lines: Vec<String> = lines_from_file(args.file.clone()).expect("should read");
     let parsed_lines: Vec<crate::structs::LineParseResult::LineParseResult> =
         lines.par_iter().map(|l: &String| parse_line(l)).collect();
-
+    let mut stdout = io::stdout().lock();
     let mut kel: Vec<LineParseResult> = parsed_lines
         .into_par_iter()
         .filter(|p: &crate::structs::LineParseResult::LineParseResult| {
-            utils::keep_line::keep_line(p.clone()) == true
+            utils::keep_line::keep_line(p) == true
         })
         .collect();
     if !args.unique.is_none() && args.unique == Some(true) {
@@ -45,7 +45,8 @@ fn main() {
         utils::session_unique::session_unique(kel);
     } else {
         for line in sort_by_date(kel) {
-            println!("{}", line.full_text + "\n");
+            stdout.write_all(line.full_text.as_bytes());
+            stdout.write_all(b"\n\n");
         }
     }
 }

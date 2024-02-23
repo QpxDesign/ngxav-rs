@@ -14,18 +14,18 @@ use std::time::{SystemTime, UNIX_EPOCH};
 lazy_static! {
     static ref ARGS: crate::structs::Args::ArgParser = ArgParser::parse();
 }
-pub fn keep_line(parsed_line: LineParseResult) -> bool {
+pub fn keep_line(parsed_line: &LineParseResult) -> bool {
     let tz = parsed_line.time.split(" ").collect::<Vec<_>>()[1];
     if !ARGS.search.is_none() {
         if !ARGS.plain_text.is_none() && ARGS.plain_text == Some(true) {
             if !parsed_line
                 .full_text
-                .contains(&ARGS.search.to_owned().unwrap().to_string())
+                .contains(&ARGS.search.as_ref().unwrap().to_string())
             {
                 return false;
             }
         } else {
-            let re = Regex::new(&ARGS.search.to_owned().unwrap().to_string()).unwrap();
+            let re = Regex::new(&ARGS.search.clone().unwrap().to_string()).unwrap();
             if !re.is_match(&parsed_line.full_text) {
                 return false;
             }
@@ -33,14 +33,14 @@ pub fn keep_line(parsed_line: LineParseResult) -> bool {
     }
     if !ARGS.start_date.is_none() && ARGS.end_date.is_none() {
         if parse_nginx_time_format(&parsed_line.time)
-            < parse_input_time(ARGS.start_date.to_owned().unwrap(), tz.to_string())
+            < parse_input_time(&ARGS.start_date.as_ref().unwrap(), tz.to_string())
         {
             return false;
         }
     }
     if !ARGS.end_date.is_none() && ARGS.start_date.is_none() {
         if parse_nginx_time_format(&parsed_line.time)
-            > parse_input_time(ARGS.end_date.to_owned().unwrap(), tz.to_string())
+            > parse_input_time(&ARGS.end_date.as_ref().unwrap(), tz.to_string())
         {
             return false;
         }
@@ -48,26 +48,28 @@ pub fn keep_line(parsed_line: LineParseResult) -> bool {
     if !ARGS.start_date.is_none()
         && !ARGS.end_date.is_none()
         && (parse_nginx_time_format(&parsed_line.time)
-            > parse_input_time(ARGS.end_date.to_owned().unwrap(), tz.to_string())
+            > parse_input_time(&ARGS.end_date.as_ref().unwrap(), tz.to_string())
             || parse_nginx_time_format(&parsed_line.time)
-                < parse_input_time(ARGS.start_date.to_owned().unwrap(), tz.to_string()))
+                < parse_input_time(&ARGS.start_date.as_ref().unwrap(), tz.to_string()))
     {
         return false;
     }
-    if !ARGS.host.is_none() && parsed_line.host != ARGS.host.to_owned().unwrap() {
+    if !ARGS.host.is_none() && parsed_line.host.as_str() != ARGS.host.as_ref().unwrap() {
         return false;
     }
     if !ARGS.request.is_none()
         && !parsed_line
             .request
-            .contains(&ARGS.request.to_owned().unwrap())
+            .contains(&ARGS.request.as_ref().unwrap().to_string())
     {
         return false;
     }
-    if !ARGS.http_status.is_none() && parsed_line.status != ARGS.http_status.to_owned().unwrap() {
+    if !ARGS.http_status.is_none()
+        && parsed_line.status.as_str() != ARGS.http_status.as_ref().unwrap()
+    {
         return false;
     }
-    if !ARGS.referer.is_none() && parsed_line.referer != ARGS.referer.to_owned().unwrap() {
+    if !ARGS.referer.is_none() && parsed_line.referer.as_str() != ARGS.referer.as_ref().unwrap() {
         return false;
     }
     let start = SystemTime::now();
@@ -81,9 +83,9 @@ pub fn keep_line(parsed_line: LineParseResult) -> bool {
             return false;
         }
     }
-    let parsed_ua = parse_user_agent(parsed_line.user_agent);
+    let parsed_ua = parse_user_agent(parsed_line.user_agent.clone());
     if ARGS.browser.is_some()
-        && parsed_ua.browser.to_lowercase() != ARGS.browser.to_owned().expect("WOOP").to_lowercase()
+        && parsed_ua.browser.to_lowercase() != ARGS.browser.as_ref().expect("WOOP").to_lowercase()
     {
         return false;
     }
@@ -94,14 +96,14 @@ pub fn keep_line(parsed_line: LineParseResult) -> bool {
         return false;
     }
     if ARGS.device_category.is_some()
-        && ARGS.device_category.to_owned().unwrap() != parsed_ua.category
+        && ARGS.device_category.as_ref().unwrap().as_str() != parsed_ua.category
     {
         return false;
     }
-    if ARGS.bot.is_some() && ARGS.bot.clone().unwrap() == false && parsed_ua.isBot == true {
+    if ARGS.bot.is_some() && ARGS.bot.unwrap() == false && parsed_ua.isBot == true {
         return false;
     }
-    if ARGS.bot.is_some() && ARGS.bot.clone().unwrap() == true && parsed_ua.isBot == false {
+    if ARGS.bot.is_some() && ARGS.bot.unwrap() == true && parsed_ua.isBot == false {
         return false;
     }
 
