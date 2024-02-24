@@ -1,6 +1,7 @@
 use crate::utils::parse_line::parse_line;
+use crate::utils::parse_nginx_time_format::parse_nginx_time_format;
 use crate::utils::sessionize::sessionize;
-use crate::utils::sort_by_date::sort_by_date;
+use rayon::slice::ParallelSliceMut;
 
 pub fn session_unique(log_selection: Vec<crate::structs::LineParseResult::LineParseResult>) {
     let sessions = sessionize(log_selection);
@@ -12,7 +13,8 @@ pub fn session_unique(log_selection: Vec<crate::structs::LineParseResult::LinePa
             }
         }
     }
-    for o in sort_by_date(out, &None, &None, &None) {
+    out.par_sort_by_key(|a| parse_nginx_time_format(a.time.as_str()).timestamp());
+    for o in out {
         println!("{}", o.full_text + "\n");
     }
 }
