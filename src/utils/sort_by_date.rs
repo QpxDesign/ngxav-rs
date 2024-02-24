@@ -47,7 +47,6 @@ pub fn sort_by_date(
             since_the_epoch.as_secs().try_into().unwrap(),
         );
     }
-    ls.par_sort_by_key(|a| parse_nginx_time_format(a.time.as_str()).timestamp());
     return ls;
 }
 

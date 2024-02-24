@@ -2,6 +2,7 @@ use crate::sort_by_date::sort_by_date;
 use clap::Parser;
 use rayon::prelude::*;
 use structs::LineParseResult::LineParseResult;
+use utils::parse_nginx_time_format::parse_nginx_time_format;
 use utils::sort_by_date;
 #[path = "./structs/mod.rs"]
 mod structs;
@@ -51,6 +52,7 @@ fn main() {
     } else if !args.session_unqiue.is_none() && args.session_unqiue == Some(true) {
         utils::session_unique::session_unique(kel);
     } else {
+        kel.par_sort_by_key(|a| parse_nginx_time_format(a.time.as_str()).timestamp());
         for line in kel {
             stdout.write_all(line.full_text.as_bytes());
             stdout.write_all(b"\n\n");
