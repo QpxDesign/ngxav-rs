@@ -65,6 +65,7 @@ async fn main() {
                     .len()
                     .to_string()
             );
+
             return;
         }
         TestIndex += 1;

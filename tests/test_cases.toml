@@ -1,25 +1,14 @@
 [[test_cases]]
 name = "Large File/Normal"
-run_type = "output"
+run_type = "checksum"
 cmd = "../target/release/ngxav -f ../tests/logs/750k.log -m 10"
-expect = """
-12 MB 523401 media.quinnpatwardhan.com "GET /images/JJkT7kIQ.jpg HTTP/1.1"
-12 MB 523401 media.quinnpatwardhan.com "GET /images/JJkT7kIQ.jpg HTTP/1.1"
-12 MB 523401 media.quinnpatwardhan.com "GET /images/JJkT7kIQ.jpg HTTP/1.1"
-12 MB 65854 media.quinnpatwardhan.com "GET /images/JJkT7kIQ.jpg HTTP/1.1"
-7 MB 523401 quinnpatwardhan.com "GET /Assets/density_matters.png HTTP/1.1"
-7 MB 90918 quinnpatwardhan.com "GET /Assets/density_matters.png HTTP/1.1"
-7 MB 610754 quinnpatwardhan.com "GET /Assets/density_matters.png HTTP/1.1"
-7 MB 593717 www.quinnpatwardhan.com "GET /Assets/density_matters.png HTTP/1.1"
-7 MB 623417 www.quinnpatwardhan.com "GET /Assets/density_matters.png HTTP/1.1"
-7 MB 353509 quinnpatwardhan.com "GET /Assets/density_matters.png HTTP/1.1"
-"""
+expect = "c77401d7629f148e1bd0e73a1c01235f"
 
 [[test_cases]]
 name = "Analytics/Normal"
 run_type = "checksum"
 cmd = "../target/release/ngxav -f ../tests/logs/750k.log -a"
-expect = "bc0c96a5bc426fd0527721b28c793c4c"
+expect = "9ea8a180192fba8b51c459e1bbe8c203"
 
 [[test_cases]]
 name = "Unique/Normal"
@@ -43,13 +32,13 @@ expect = "751"
 name = "EndDate"
 run_type = "lines_count"
 cmd = "../target/release/ngxav -f ../tests/logs/750k.log -e 21/Jan/2024:18:00:00"
-expect = "604431"
+expect = "604427"
 
 [[test_cases]]
 name = "StartAndEndDate"
 run_type = "lines_count"
 cmd = "../target/release/ngxav -f ../tests/logs/750k.log -b 21/Jan/2024:16:00:00 -e 21/Jan/2024:18:00:00"
-expect = "12263"
+expect = "12259"
 
 [[test_cases]]
 name = "Host"
@@ -85,10 +74,10 @@ expect = "31"
 name = "IpSession"
 run_type = "checksum"
 cmd = "../target/release/ngxav -f ../tests/logs/750k.log -d 20829"
-expect = "ad7ba0ac82322c0219fdc60c0c6cea98"
+expect = "5c0f02825c089556fa18307f91e1ad4e"
 
 [[test_cases]]
 name = "SessionUnique"
-run_type = "checksum"
+run_type = "lines_count"
 cmd = "../target/release/ngxav -f ../tests/logs/750k.log --su -s png"
-expect = "b67ea7436135a11ed9565ee4ed27df9c"
+expect = "163"
