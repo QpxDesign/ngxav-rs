@@ -50,7 +50,7 @@ fn main() {
     } else if !args.session_unqiue.is_none() && args.session_unqiue == Some(true) {
         utils::session_unique::session_unique(kel);
     } else {
-        for line in sort_by_date(kel) {
+        for line in sort_by_date(kel, &args.last, &args.start_date, &args.end_date) {
             stdout.write_all(line.full_text.as_bytes());
             stdout.write_all(b"\n\n");
         }

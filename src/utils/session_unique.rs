@@ -12,7 +12,7 @@ pub fn session_unique(log_selection: Vec<crate::structs::LineParseResult::LinePa
             }
         }
     }
-    for o in sort_by_date(out) {
+    for o in sort_by_date(out, &None, &None, &None) {
         println!("{}", o.full_text + "\n");
     }
 }
