@@ -6,10 +6,10 @@ use std::collections::HashMap;
 
 pub fn sort_by_body_size(log_selection: Vec<LineParseResult>, n: usize) {
     let mut parsed_lines = log_selection.clone();
-    let mut occurrences: HashMap<String, LineParseResult> = HashMap::new();
+    let mut occurrences: HashMap<&str, LineParseResult> = HashMap::new();
     for line in parsed_lines {
         if occurrences.contains_key(&line.request) == false {
-            occurrences.insert(line.request.clone(), line);
+            occurrences.insert(line.request, line);
         }
     }
     let mut final_lines: Vec<_> = occurrences.values().cloned().collect();

@@ -13,13 +13,13 @@ pub fn sessions_from_ip(
             for session in session_entry.sessions {
                 let mut host_path: Vec<String> = Vec::new();
                 if session.len() != 0 && session.len() != 1 {
-                    session_start_times.push(parse_line(session[0].as_str()).time);
-                    session_end_times.push(parse_line(session[session.len() - 1].as_str()).time);
+                    session_start_times.push(parse_line(&session[0]).time);
+                    session_end_times.push((parse_line(&session[session.len() - 1]).time).clone());
                     for line in session {
                         let h = parse_line(&line).host;
                         //  if len(host_path) == 0 or host_path[-1] != parse_line(line)["host"]:
                         if host_path.len() == 0 || host_path[host_path.len() - 1] != h {
-                            host_path.push(h);
+                            host_path.push(h.to_string());
                         }
                     }
                     host_paths.push(host_path);
@@ -48,7 +48,7 @@ fn StringVecToKey(sv: Vec<String>) -> String {
     let mut ans: String = "[".to_string();
 
     for item in sv {
-        let s = format!("{item}, ", item = item.as_str());
+        let s = format!("{item}, ", item = item);
         ans.push_str(&s);
     }
     return ans + "]";

@@ -1,16 +1,16 @@
 use std::collections::HashMap;
 
 #[derive(Clone)]
-pub struct AnalyticsResult {
+pub struct AnalyticsResult<'a> {
     pub request_count: i64,
     pub total_bytes_sent: i64,
-    pub top_requests: HashMap<String, TopResult>,
-    pub top_hosts: HashMap<String, TopResult>,
-    pub top_ips: HashMap<String, TopResult>,
+    pub top_requests: HashMap<&'a str, TopResult<'a>>,
+    pub top_hosts: HashMap<&'a str, TopResult<'a>>,
+    pub top_ips: HashMap<&'a str, TopResult<'a>>,
 }
 
 #[derive(Clone)]
-pub struct TopResult {
-    pub text: String,
+pub struct TopResult<'a> {
+    pub text: &'a str,
     pub count: i64,
 }

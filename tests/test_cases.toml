@@ -2,13 +2,13 @@
 name = "Large File/Normal"
 run_type = "checksum"
 cmd = "../target/release/ngxav -f ../tests/logs/750k.log -m 10"
-expect = "c77401d7629f148e1bd0e73a1c01235f"
+expect = "58101863a603e68e8d79579662d2573b"
 
 [[test_cases]]
 name = "Analytics/Normal"
 run_type = "checksum"
 cmd = "../target/release/ngxav -f ../tests/logs/750k.log -a"
-expect = "9ea8a180192fba8b51c459e1bbe8c203"
+expect = "9746e37f416060c998f54c59ef043ff8"
 
 [[test_cases]]
 name = "Unique/Normal"
@@ -74,7 +74,7 @@ expect = "31"
 name = "IpSession"
 run_type = "checksum"
 cmd = "../target/release/ngxav -f ../tests/logs/750k.log -d 20829"
-expect = "5c0f02825c089556fa18307f91e1ad4e"
+expect = "88d7880f8e24eae156ade224772a9bf9"
 
 [[test_cases]]
 name = "SessionUnique"

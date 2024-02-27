@@ -27,17 +27,17 @@ fn main() {
             .build_global()
             .unwrap();
     }
-    let lines: Vec<String> = lines_from_file(args.file.clone()).expect("should read");
-    let parsed_lines: Vec<crate::structs::LineParseResult::LineParseResult> =
+    let lines = lines_from_file(args.file).expect("should read");
+    let mut kel: Vec<crate::structs::LineParseResult::LineParseResult> =
         lines.par_iter().map(|l: &String| parse_line(l)).collect();
     let mut stdout = io::stdout().lock();
-    let mut kel: Vec<LineParseResult> = parsed_lines
+    kel = kel
         .into_par_iter()
         .filter(|p: &crate::structs::LineParseResult::LineParseResult| {
             utils::keep_line::keep_line(p) == true
         })
         .collect();
-    kel = sort_by_date(kel, &args.last, &args.start_date, &args.end_date);
+    kel = sort_by_date(&kel, &args.last, &args.start_date, &args.end_date);
     if !args.unique.is_none() && args.unique == Some(true) {
         kel = utils::unique_ips_only::unique_ips_only(kel);
     }
@@ -52,7 +52,7 @@ fn main() {
     } else if !args.session_unqiue.is_none() && args.session_unqiue == Some(true) {
         utils::session_unique::session_unique(kel);
     } else {
-        kel.par_sort_by_key(|a| parse_nginx_time_format(a.time.as_str()).timestamp());
+        kel.par_sort_by_key(|a| parse_nginx_time_format(&a.time).timestamp());
         for line in kel {
             stdout.write_all(line.full_text.as_bytes());
             stdout.write_all(b"\n\n");

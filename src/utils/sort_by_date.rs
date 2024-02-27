@@ -2,12 +2,15 @@ use crate::utils::parse_input_time::parse_input_time;
 use crate::utils::parse_nginx_time_format::parse_nginx_time_format;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-pub fn sort_by_date(
-    log_selection: Vec<crate::structs::LineParseResult::LineParseResult>,
+pub fn sort_by_date<'a>(
+    log_selection: &Vec<crate::structs::LineParseResult::LineParseResult<'a>>,
     last_min: &Option<u64>,
     start_date: &Option<String>,
     end_date: &Option<String>,
-) -> Vec<crate::structs::LineParseResult::LineParseResult> {
+) -> Vec<crate::structs::LineParseResult::LineParseResult<'a>> {
+    if log_selection.len() == 0 {
+        return log_selection.to_vec();
+    }
     let tz = log_selection[0].time.split(" ").collect::<Vec<_>>()[1].to_string();
     if !last_min.is_none() {
         let start = SystemTime::now();
@@ -48,14 +51,14 @@ pub fn sort_by_date(
             since_the_epoch.as_secs().try_into().unwrap(),
         );
     }
-    return log_selection;
+    return log_selection.to_vec();
 }
 
-fn b_search(
-    logs: &Vec<crate::structs::LineParseResult::LineParseResult>,
+fn b_search<'a>(
+    logs: &Vec<crate::structs::LineParseResult::LineParseResult<'a>>,
     start_time_range: i64,
     end_time_range: i64,
-) -> Vec<crate::structs::LineParseResult::LineParseResult> {
+) -> Vec<crate::structs::LineParseResult::LineParseResult<'a>> {
     let st =
         logs.partition_point(|x| parse_nginx_time_format(&x.time).timestamp() < start_time_range);
     let en = logs[st..]

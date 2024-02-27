@@ -20,7 +20,7 @@ pub fn generate_analytical_output(log_selection: Vec<LineParseResult>) {
         stats.total_bytes_sent += parsed_line.body_bytes_sent.abs();
         if stats.top_requests.contains_key(&parsed_line.request) == false {
             stats.top_requests.insert(
-                parsed_line.request.to_string(),
+                parsed_line.request,
                 structs::AnalyticsResult::TopResult {
                     text: parsed_line.request,
                     count: 0,
@@ -31,7 +31,7 @@ pub fn generate_analytical_output(log_selection: Vec<LineParseResult>) {
 
         if stats.top_hosts.contains_key(&parsed_line.host) == false {
             stats.top_hosts.insert(
-                parsed_line.host.to_string(),
+                parsed_line.host,
                 structs::AnalyticsResult::TopResult {
                     text: parsed_line.host,
                     count: 0,

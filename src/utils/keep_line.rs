@@ -30,7 +30,9 @@ pub fn keep_line(parsed_line: &LineParseResult) -> bool {
             }
         }
     }
-    if !ARGS.host.is_none() && parsed_line.host.as_str() != ARGS.host.as_ref().unwrap() {
+    if !ARGS.host.is_none()
+        && parsed_line.host.replace('"', "").as_str() != ARGS.host.as_ref().unwrap()
+    {
         return false;
     }
     if !ARGS.request.is_none()
@@ -40,12 +42,12 @@ pub fn keep_line(parsed_line: &LineParseResult) -> bool {
     {
         return false;
     }
-    if !ARGS.http_status.is_none()
-        && parsed_line.status.as_str() != ARGS.http_status.as_ref().unwrap()
-    {
+    if !ARGS.http_status.is_none() && parsed_line.status != ARGS.http_status.as_ref().unwrap() {
         return false;
     }
-    if !ARGS.referer.is_none() && parsed_line.referer.as_str() != ARGS.referer.as_ref().unwrap() {
+    if !ARGS.referer.is_none()
+        && parsed_line.referer.replace('"', "").as_str() != ARGS.referer.as_ref().unwrap()
+    {
         return false;
     }
     if ARGS.browser.is_none()
