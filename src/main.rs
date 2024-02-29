@@ -1,9 +1,11 @@
 use crate::sort_by_date::sort_by_date;
 use clap::Parser;
 use rayon::prelude::*;
-use structs::LineParseResult::LineParseResult;
+use std::collections::HashMap;
+use utils::keep_line::keep_line;
 use utils::parse_nginx_time_format::parse_nginx_time_format;
 use utils::sort_by_date;
+
 #[path = "./structs/mod.rs"]
 mod structs;
 mod utils;
@@ -19,6 +21,11 @@ use std::{
 fn lines_from_file(filename: impl AsRef<Path>) -> io::Result<Vec<String>> {
     BufReader::new(File::open(filename)?).lines().collect()
 }
+fn read_line_by_line(filename: impl AsRef<Path>) -> io::Result<io::Lines<io::BufReader<File>>> {
+    let file = File::open(filename)?;
+    Ok(io::BufReader::new(file).lines())
+}
+
 fn main() {
     let args: crate::structs::Args::ArgParser = ArgParser::parse();
     if args.thread_count.is_some() {
@@ -26,6 +33,25 @@ fn main() {
             .num_threads(args.thread_count.unwrap().try_into().expect("WOMP WOMP"))
             .build_global()
             .unwrap();
+    }
+    if !args.conserve_memory.is_none() && args.conserve_memory.unwrap() == true {
+        if let Ok(lines) = read_line_by_line(args.file) {
+            let mut occurrences: HashMap<String, bool> = HashMap::new();
+            for line in lines.flatten() {
+                let ip: String = line.clone().split(" ").collect::<Vec<&str>>()[0].to_string();
+                if keep_line(&parse_line(&line)) {
+                    if args.unique.is_some() && args.unique.unwrap() == true {
+                        if !occurrences.contains_key(&ip) {
+                            println!("{}", line.clone() + "\n");
+                            occurrences.insert(ip, true);
+                        }
+                    } else {
+                        println!("{}", line.clone() + "\n");
+                    }
+                }
+            }
+        }
+        return;
     }
     let lines = lines_from_file(args.file).expect("should read");
     let mut kel: Vec<crate::structs::LineParseResult::LineParseResult> =

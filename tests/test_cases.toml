@@ -81,3 +81,15 @@ name = "SessionUnique"
 run_type = "lines_count"
 cmd = "../target/release/ngxav -f ../tests/logs/750k.log --su -s png"
 expect = "163"
+
+[[test_cases]]
+name = "ConserveMem/Unqiue"
+run_type = "lines_count"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log -s CFNetwork -u --cm"
+expect = "4185"
+
+[[test_cases]]
+name = "ConserveMem/Normal"
+run_type = "lines_count"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log -s CFNetwork --cm"
+expect = "552863"

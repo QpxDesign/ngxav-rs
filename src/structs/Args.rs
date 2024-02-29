@@ -68,4 +68,7 @@ pub struct ArgParser {
 
     #[arg(short = 'i', long = "threads")]
     pub thread_count: Option<i64>,
+
+    #[arg(short = 'c', long = "cm", action=ArgAction::SetTrue)]
+    pub conserve_memory: Option<bool>,
 }
