@@ -15,7 +15,7 @@ lazy_static! {
     static ref ARGS: crate::structs::Args::ArgParser = ArgParser::parse();
     static ref SEARCH_REGEX: Regex = Regex::new(&ARGS.search.clone().unwrap().to_string()).unwrap();
 }
-pub fn keep_line(parsed_line: &LineParseResult) -> bool {
+pub fn keep_line(parsed_line: &LineParseResult, cm: bool) -> bool {
     if !ARGS.search.is_none() {
         if !ARGS.plain_text.is_none() && ARGS.plain_text == Some(true) {
             if !parsed_line
@@ -80,6 +80,43 @@ pub fn keep_line(parsed_line: &LineParseResult) -> bool {
     if ARGS.bot.is_some() && ARGS.bot.unwrap() == true && parsed_ua.isBot == false {
         return false;
     }
-
+    if cm == false {
+        return true;
+    }
+    let tz = parsed_line.time.split(" ").collect::<Vec<_>>()[1];
+    if !ARGS.start_date.is_none() && ARGS.end_date.is_none() {
+        if parse_nginx_time_format(&parsed_line.time)
+            < parse_input_time(&ARGS.start_date.as_ref().unwrap(), tz.to_string())
+        {
+            return false;
+        }
+    }
+    if !ARGS.end_date.is_none() && ARGS.start_date.is_none() {
+        if parse_nginx_time_format(&parsed_line.time)
+            > parse_input_time(&ARGS.end_date.as_ref().unwrap(), tz.to_string())
+        {
+            return false;
+        }
+    }
+    if !ARGS.start_date.is_none()
+        && !ARGS.end_date.is_none()
+        && (parse_nginx_time_format(&parsed_line.time)
+            > parse_input_time(&ARGS.end_date.as_ref().unwrap(), tz.to_string())
+            || parse_nginx_time_format(&parsed_line.time)
+                < parse_input_time(&ARGS.start_date.as_ref().unwrap(), tz.to_string()))
+    {
+        return false;
+    }
+    let start = SystemTime::now();
+    let since_the_epoch = start
+        .duration_since(UNIX_EPOCH)
+        .expect("Time went backwards");
+    let mut epoch_seconds: u64 = since_the_epoch.as_secs();
+    if !ARGS.last.is_none() {
+        epoch_seconds = epoch_seconds - 60 * ARGS.last.unwrap();
+        if parse_nginx_time_format(&parsed_line.time).timestamp() < (epoch_seconds as i64) {
+            return false;
+        }
+    }
     return true;
 }

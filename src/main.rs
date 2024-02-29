@@ -39,7 +39,7 @@ fn main() {
             let mut occurrences: HashMap<String, bool> = HashMap::new();
             for line in lines.flatten() {
                 let ip: String = line.clone().split(" ").collect::<Vec<&str>>()[0].to_string();
-                if keep_line(&parse_line(&line)) {
+                if keep_line(&parse_line(&line), true) {
                     if args.unique.is_some() && args.unique.unwrap() == true {
                         if !occurrences.contains_key(&ip) {
                             println!("{}", line.clone() + "\n");
@@ -60,7 +60,7 @@ fn main() {
     kel = kel
         .into_par_iter()
         .filter(|p: &crate::structs::LineParseResult::LineParseResult| {
-            utils::keep_line::keep_line(p) == true
+            utils::keep_line::keep_line(p, false) == true
         })
         .collect();
     kel = sort_by_date(&kel, &args.last, &args.start_date, &args.end_date);

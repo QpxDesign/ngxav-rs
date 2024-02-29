@@ -1,7 +1,7 @@
 workspace = { members = [ "tests","tests/obfuscate_access_log_ips"] }
 [package]
 name = "ngxav"
-version = "0.4.1"
+version = "0.4.2"
 edition = "2021"
 license = "MIT"
 description = "Search through NGINX logs with advanced filters and support for displaying analytics about your selected log entries"
