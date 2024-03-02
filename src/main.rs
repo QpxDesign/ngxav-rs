@@ -2,6 +2,7 @@ use crate::sort_by_date::sort_by_date;
 use clap::Parser;
 use rayon::prelude::*;
 use std::collections::HashMap;
+use std::iter::FromIterator;
 use utils::keep_line::keep_line;
 use utils::parse_nginx_time_format::parse_nginx_time_format;
 use utils::sort_by_date;
@@ -54,8 +55,11 @@ fn main() {
         return;
     }
     let lines = lines_from_file(args.file).expect("should read");
-    let mut kel: Vec<crate::structs::LineParseResult::LineParseResult> =
-        lines.par_iter().map(|l: &String| parse_line(l)).collect();
+    let range = sort_by_date(&lines, &args.last, &args.start_date, &args.end_date);
+    let mut kel: Vec<crate::structs::LineParseResult::LineParseResult> = lines[range.0..range.1]
+        .par_iter()
+        .map(|l: &String| parse_line(l))
+        .collect();
     let mut stdout = io::stdout().lock();
     kel = kel
         .into_par_iter()
@@ -63,7 +67,6 @@ fn main() {
             utils::keep_line::keep_line(p, false) == true
         })
         .collect();
-    kel = sort_by_date(&kel, &args.last, &args.start_date, &args.end_date);
     if !args.unique.is_none() && args.unique == Some(true) {
         kel = utils::unique_ips_only::unique_ips_only(kel);
     }

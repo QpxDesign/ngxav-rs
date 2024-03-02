@@ -2,16 +2,19 @@ use crate::utils::parse_input_time::parse_input_time;
 use crate::utils::parse_nginx_time_format::parse_nginx_time_format;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-pub fn sort_by_date<'a>(
-    log_selection: &Vec<crate::structs::LineParseResult::LineParseResult<'a>>,
+pub fn sort_by_date(
+    log_selection: &Vec<String>,
     last_min: &Option<u64>,
     start_date: &Option<String>,
     end_date: &Option<String>,
-) -> Vec<crate::structs::LineParseResult::LineParseResult<'a>> {
+) -> (usize, usize) {
     if log_selection.len() == 0 {
-        return log_selection.to_vec();
+        return (0, 0);
     }
-    let tz = log_selection[0].time.split(" ").collect::<Vec<_>>()[1].to_string();
+    let tz = log_selection[0].split(" ").collect::<Vec<_>>()[4]
+        .to_string()
+        .replace("]", "");
+
     if !last_min.is_none() {
         let start = SystemTime::now();
         let since_the_epoch = start
@@ -44,26 +47,26 @@ pub fn sort_by_date<'a>(
         let since_the_epoch = start
             .duration_since(UNIX_EPOCH)
             .expect("Time went backwards");
-
         return b_search(
             &log_selection,
             parse_input_time(&start_date.as_ref().unwrap(), tz).timestamp(),
             since_the_epoch.as_secs().try_into().unwrap(),
         );
     }
-    return log_selection.to_vec();
+    return (0, log_selection.len() - 1);
 }
 
-fn b_search<'a>(
-    logs: &Vec<crate::structs::LineParseResult::LineParseResult<'a>>,
-    start_time_range: i64,
-    end_time_range: i64,
-) -> Vec<crate::structs::LineParseResult::LineParseResult<'a>> {
-    let st =
-        logs.partition_point(|x| parse_nginx_time_format(&x.time).timestamp() < start_time_range);
-    let en = logs[st..]
-        .partition_point(|x| parse_nginx_time_format(&x.time).timestamp() < end_time_range)
-        + st;
+fn b_search(logs: &Vec<String>, start_time_range: i64, end_time_range: i64) -> (usize, usize) {
+    let st = logs.partition_point(|x| {
+        let fields = x.split(" ").collect::<Vec<_>>();
+        let t = fields[3].replace("[", "") + " " + &fields[4].replace("]", "");
+        parse_nginx_time_format(&t).timestamp() < start_time_range
+    });
+    let en = logs[st..].partition_point(|x| {
+        let fields = x.split(" ").collect::<Vec<_>>();
+        let t = fields[3].replace("[", "") + " " + &fields[4].replace("]", "");
+        return parse_nginx_time_format(&t).timestamp() < end_time_range;
+    });
 
-    return logs[st..en].to_vec();
+    return (st, en + st);
 }

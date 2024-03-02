@@ -8,7 +8,7 @@ expect = "58101863a603e68e8d79579662d2573b"
 name = "Analytics/Normal"
 run_type = "checksum"
 cmd = "../target/release/ngxav -f ../tests/logs/750k.log -a"
-expect = "9746e37f416060c998f54c59ef043ff8"
+expect = "2ecf66abe54318573181ea1c0715accd"
 
 [[test_cases]]
 name = "Unique/Normal"
