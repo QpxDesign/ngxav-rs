@@ -14,17 +14,5 @@ jobs:
 
     - name: Run Tests
       id: run_tests
-      run: |
-        result=$(cd tests && cargo run)
-        echo "::set-output name=result::$result"
+      run: cd tests && cargo run
 
-    - name: Parse test results
-      run: |
-        while IFS= read -r line; do
-          if [[ $line == *"Passed!"* ]]; then
-            echo "Test ${line#*#} - Passed"
-          else
-            echo "Test ${line#*#} - Failed"
-            exit 1
-          fi
-        done <<< "${{ steps.run_tests.outputs.result }}"
