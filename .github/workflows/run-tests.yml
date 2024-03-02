@@ -5,6 +5,11 @@ jobs:
   ExecuteTests:
     runs-on: ubuntu-latest
     steps:
+         - name: Install Rust toolchain
+        run: |
+          rustup update --no-self-update ${{ env.RUST_CHANNEL }}
+          rustup component add --toolchain ${{ env.RUST_CHANNEL }} rustfmt rust-src
+          rustup default ${{ env.RUST_CHANNEL }}
       - run: echo $(ls)
       - run: cargo build -r
       - run: cd tests
