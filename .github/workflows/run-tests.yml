@@ -1,0 +1,10 @@
+name: Run Tests
+run-name: Build & Test Project Across 16+ Test Cases 🚀
+on: [push]
+jobs:
+  Explore-GitHub-Actions:
+    runs-on: ubuntu-latest
+    steps:
+      - run: cargo build -r
+      - run: cd tests
+      - run: cargo run
