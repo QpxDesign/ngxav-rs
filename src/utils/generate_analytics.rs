@@ -67,7 +67,7 @@ pub fn generate_analytical_output(log_selection: Vec<LineParseResult>) {
         "
     ===~ LOG SELECTION STATS ~===
 Total Requests: {total_requests}
-Total Data Sent: {td}
+Total Data Sent: {td}A
 
 Top 5 Requests:
 {top5requests}
