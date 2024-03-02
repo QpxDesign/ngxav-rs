@@ -9,13 +9,8 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-
-
     - name: Build project
       run: cargo build --verbose
 
-    - name: Change directory to tests
-      run: cd tests
-
-    - name: Run tests
-      run: cargo run
+    - name: Run Tests
+      run: cd tests && cargo run
