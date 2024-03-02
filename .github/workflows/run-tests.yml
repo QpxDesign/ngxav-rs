@@ -8,9 +8,11 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+    -name: Enable Debug
+      run: export RUST_BACKTRACE=1
 
     - name: Build project
-      run: cargo build --verbose
+      run: cargo build -r --verbose
 
     - name: Run Tests
       run: cd tests && cargo run
