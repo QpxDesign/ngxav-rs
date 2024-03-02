@@ -9,9 +9,22 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-
     - name: Build project
       run: cargo build -r --verbose
 
     - name: Run Tests
-      run: cd tests && cargo run
+      id: run_tests
+      run: |
+        result=$(cd tests && cargo run)
+        echo "::set-output name=result::$result"
+
+    - name: Parse test results
+      run: |
+        echo "${{ steps.run_tests.outputs.result }}" | while read -r line; do
+          if [[ $line == *"Passed!"* ]]; then
+            echo "Test ${line#*#} - Passed"
+          else
+            echo "Test ${line#*#} - Failed"
+            exit 1
+          fi
+        done
