@@ -2,15 +2,23 @@ name: Run Tests
 run-name: Build & Test Project Across 16+ Test Cases 🚀
 on: [push]
 jobs:
-  ExecuteTests:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Install Rust toolchain
-        run: |
-          rustup update --no-self-update ${{ env.RUST_CHANNEL }}
-          rustup component add --toolchain ${{ env.RUST_CHANNEL }} rustfmt rust-src
-          rustup default ${{ env.RUST_CHANNEL }}
-      - run: echo $(ls)
-      - run: cargo build -r
-      - run: cd tests
-      - run: cargo run
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Rust
+      uses: actions/setup-rust@v1
+      with:
+        rust-version: stable
+
+    - name: Build project
+      run: cargo build --verbose
+
+    - name: Change directory to tests
+      run: cd tests
+
+    - name: Run tests
+      run: cargo run
