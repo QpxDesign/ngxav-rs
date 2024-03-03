@@ -6,13 +6,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Build project
-      run: cargo build -r --verbose
+      - name: Build project
+        run: cargo build -r --verbose
 
-    - name: Run Tests
-      id: run_tests
-      run: cd tests && cargo run
-
+      - name: Run Tests
+        id: run_tests
+        run: cd tests && cargo run
