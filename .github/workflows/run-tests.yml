@@ -1,4 +1,4 @@
-name: Run Tests
+name: Build & Run Tests
 run-name: Build & Test Project Across 16+ Test Cases 🚀
 on: [push]
 jobs:
