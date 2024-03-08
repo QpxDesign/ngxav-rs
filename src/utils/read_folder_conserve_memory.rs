@@ -12,7 +12,7 @@ pub fn read_folder_conserve_memory(file_path: String, isUnique: Option<bool>) {
     paths.sort_by_key(|x| {
         metadata(x.as_ref().unwrap().path().to_str().unwrap())
             .unwrap()
-            .modified()
+            .created()
             .unwrap()
     });
     let mut occurrences: HashMap<String, bool> = HashMap::new();
