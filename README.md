@@ -14,7 +14,7 @@ To run this, use `ngxav`.
 If you're using the default NGINX Log Format, this should be working right out of the box.
 You can use the following flags to search using different parameters:
 
-- `-f/--file` - REQUIRED, specifcy the path to the file you wish to search through
+- `-f/--file` - REQUIRED, specifcy the path to the file/folder you wish to search through
 - `-s/--search`- OPTIONAL, either REGEX or text to match lines
 - `-b/--start_date`- OPTIONAL, find all logs within certain timespan (use time format 08/Nov/2023:08:04:05)
 - `-e/--end_date`- OPTIONAL, find all logs within certain timespan (use time format 08/Nov/2023:08:04:05)

@@ -5,6 +5,7 @@ use std::collections::HashMap;
 use std::iter::FromIterator;
 use utils::keep_line::keep_line;
 use utils::parse_nginx_time_format::parse_nginx_time_format;
+use utils::read_folder::read_folder;
 use utils::sort_by_date;
 
 #[path = "./structs/mod.rs"]
@@ -54,7 +55,12 @@ fn main() {
         }
         return;
     }
-    let lines = lines_from_file(args.file).expect("should read");
+    let mut lines = Vec::new();
+    if args.file.contains("/") {
+        lines = utils::read_folder::read_folder(args.file);
+    } else {
+        lines = lines_from_file(args.file).expect("should read");
+    }
     let range = sort_by_date(&lines, &args.last, &args.start_date, &args.end_date);
     let mut kel: Vec<crate::structs::LineParseResult::LineParseResult> = lines[range.0..range.1]
         .par_iter()
