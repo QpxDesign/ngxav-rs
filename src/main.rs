@@ -37,7 +37,9 @@ fn main() {
             .build_global()
             .unwrap();
     }
-    if !args.conserve_memory.is_none() && args.conserve_memory.unwrap() == true {
+    let file_md = metadata(args.file.clone()).unwrap();
+    if !args.conserve_memory.is_none() && args.conserve_memory.unwrap() == true && file_md.is_file()
+    {
         if let Ok(lines) = read_line_by_line(args.file) {
             let mut occurrences: HashMap<String, bool> = HashMap::new();
             for line in lines.flatten() {
@@ -57,9 +59,13 @@ fn main() {
         return;
     }
     let mut lines = Vec::new();
-    let file_md = metadata(args.file.clone()).unwrap();
     if file_md.is_dir() {
-        lines = utils::read_folder::read_folder(args.file);
+        if args.conserve_memory.is_some() && args.conserve_memory.unwrap() == true {
+            utils::read_folder_conserve_memory::read_folder_conserve_memory(args.file, args.unique);
+            return;
+        } else {
+            lines = utils::read_folder::read_folder(args.file);
+        }
     } else {
         lines = lines_from_file(args.file).expect("should read");
     }
