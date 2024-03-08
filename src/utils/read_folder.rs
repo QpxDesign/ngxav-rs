@@ -11,14 +11,42 @@ pub fn read_folder(file_path: String) -> Vec<String> {
         let a = std::io::BufReader::new(
             fs::File::open(path.as_ref().unwrap().path().to_str().unwrap()).unwrap(),
         );
-        if path.unwrap().path().to_str().unwrap().contains(".gz") {
+        if path
+            .as_ref()
+            .unwrap()
+            .path()
+            .to_str()
+            .unwrap()
+            .contains("error")
+        {
+        } else if path.unwrap().path().to_str().unwrap().contains(".gz") {
             let d = GzDecoder::new(a);
             for line in io::BufReader::new(d).lines() {
-                lines.push(line.unwrap().to_string());
+                if line
+                    .as_ref()
+                    .expect("WOOP")
+                    .chars()
+                    .filter(|c| *c == '"')
+                    .count()
+                    > 6
+                    && line.as_ref().expect("WOOP").len() > 20
+                {
+                    lines.push(line.unwrap().to_string());
+                }
             }
         } else {
             for line in io::BufReader::new(a).lines() {
-                lines.push(line.unwrap().to_string());
+                if line
+                    .as_ref()
+                    .expect("WOOP")
+                    .chars()
+                    .filter(|c| *c == '"')
+                    .count()
+                    > 6
+                    && line.as_ref().expect("WOOP").len() > 20
+                {
+                    lines.push(line.unwrap().to_string());
+                }
             }
         }
     }
