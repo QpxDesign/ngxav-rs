@@ -15,6 +15,7 @@ use crate::structs::Args::ArgParser;
 use crate::utils::parse_line::parse_line;
 
 use std::{
+    fs::metadata,
     fs::File,
     io::{self, BufRead, BufReader, Write},
     path::Path,
@@ -56,7 +57,8 @@ fn main() {
         return;
     }
     let mut lines = Vec::new();
-    if args.file.contains("/") {
+    let file_md = metadata(args.file.clone()).unwrap();
+    if file_md.is_dir() {
         lines = utils::read_folder::read_folder(args.file);
     } else {
         lines = lines_from_file(args.file).expect("should read");
