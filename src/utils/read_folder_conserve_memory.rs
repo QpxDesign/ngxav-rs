@@ -18,6 +18,9 @@ pub fn read_folder_conserve_memory(file_path: String, isUnique: Option<bool>) {
     let mut occurrences: HashMap<String, bool> = HashMap::new();
     for path in paths {
         let p: String = path.unwrap().path().to_str().unwrap().to_string();
+        if p.contains("error") {
+            break;
+        }
         if p.contains(".gz") {
             let file = File::open(p).expect("Ooops.");
             let reader = BufReader::new(GzDecoder::new(file));
@@ -27,7 +30,7 @@ pub fn read_folder_conserve_memory(file_path: String, isUnique: Option<bool>) {
                         let ip: String =
                             line.clone().split(" ").collect::<Vec<&str>>()[0].to_string();
 
-                        if line.chars().filter(|c| *c == '"').count() > 4
+                        if line.chars().filter(|c| *c == '"').count() > 6
                             && line.len() > 20
                             && keep_line(&parse_line(&line), true)
                         {
