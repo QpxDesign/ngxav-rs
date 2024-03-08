@@ -15,6 +15,7 @@ pub fn read_folder_conserve_memory(file_path: String, isUnique: Option<bool>) {
             .created()
             .unwrap()
     });
+    paths.reverse();
     let mut occurrences: HashMap<String, bool> = HashMap::new();
     for path in paths {
         let p: String = path.unwrap().path().to_str().unwrap().to_string();
