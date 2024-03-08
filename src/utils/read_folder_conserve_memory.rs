@@ -8,7 +8,6 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 
 pub fn read_folder_conserve_memory(file_path: String, isUnique: Option<bool>) {
-    println!("{}", "step zero");
     let mut paths: Vec<_> = fs::read_dir(file_path).unwrap().collect();
     paths.sort_by_key(|x| {
         metadata(x.as_ref().unwrap().path().to_str().unwrap())
@@ -16,7 +15,6 @@ pub fn read_folder_conserve_memory(file_path: String, isUnique: Option<bool>) {
             .modified()
             .unwrap()
     });
-    println!("{}", "step one");
     let mut occurrences: HashMap<String, bool> = HashMap::new();
     for path in paths {
         let p: String = path.unwrap().path().to_str().unwrap().to_string();
@@ -28,7 +26,11 @@ pub fn read_folder_conserve_memory(file_path: String, isUnique: Option<bool>) {
                     Ok(line) => {
                         let ip: String =
                             line.clone().split(" ").collect::<Vec<&str>>()[0].to_string();
-                        if keep_line(&parse_line(&line), true) {
+
+                        if line.chars().filter(|c| *c == '"').count() > 4
+                            && line.len() > 20
+                            && keep_line(&parse_line(&line), true)
+                        {
                             if isUnique.is_some() && isUnique.unwrap() == true {
                                 if !occurrences.contains_key(&ip) {
                                     println!("{}", line.clone() + "\n");
