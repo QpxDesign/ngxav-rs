@@ -6,6 +6,7 @@ use std::fs;
 use std::fs::metadata;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use std::time::SystemTime;
 
 pub fn read_folder_conserve_memory(file_path: String, isUnique: Option<bool>) {
     let mut paths: Vec<_> = fs::read_dir(file_path).unwrap().collect();
@@ -14,6 +15,9 @@ pub fn read_folder_conserve_memory(file_path: String, isUnique: Option<bool>) {
             .unwrap()
             .created()
             .unwrap()
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .unwrap()
+            .as_secs()
     });
     paths.reverse();
     let mut occurrences: HashMap<String, bool> = HashMap::new();
