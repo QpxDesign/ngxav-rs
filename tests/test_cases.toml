@@ -31,8 +31,8 @@ expect = "751"
 [[test_cases]]
 name = "EndDate"
 run_type = "lines_count"
-cmd = "../target/release/ngxav -f ../tests/logs/750k.log -e 21/Jan/2024:18:00:00"
-expect = "604427"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log -e 16/Jan/2024:15:00:00"
+expect = "1111"
 
 [[test_cases]]
 name = "StartAndEndDate"
@@ -91,5 +91,29 @@ expect = "4185"
 [[test_cases]]
 name = "ConserveMem/Normal"
 run_type = "lines_count"
-cmd = "../target/release/ngxav -f ../tests/logs/750k.log -s CFNetwork --cm"
-expect = "552863"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log -s png --cm"
+expect = "1551"
+
+[[test_cases]]
+name = "UserAgent/Bot"
+run_type = "checksum"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log --bot true"
+expect = "77d40d9d4d8f634a16a88e377e8da32d"
+
+[[test_cases]]
+name = "UserAgent/PC"
+run_type = "checksum"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log --device_category pc"
+expect = "c1ac68c1a5686870a1e97ba53851ea5f"
+
+[[test_cases]]
+name = "UserAgent/OS"
+run_type = "checksum"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log --os android"
+expect = "2075c103a753aad8ea74f52f70491eb0"
+
+[[test_cases]]
+name = "UserAgent/Browser"
+run_type = "checksum"
+cmd = "../target/release/ngxav -f ../tests/logs/750k.log --browser safari"
+expect = "afc81eea18cbd8c6e836238d0a158172"
