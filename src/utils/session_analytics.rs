@@ -14,8 +14,11 @@ struct SessionAnalysisStats {
     request_count_sum: i64,
     request_length_sum: i64,
 }
-pub fn session_analytics(log_selection: Vec<crate::structs::LineParseResult::LineParseResult>) {
-    let mut sessions = sessionize(log_selection);
+pub fn session_analytics(
+    log_selection: Vec<crate::structs::LineParseResult::LineParseResult>,
+    unique_by: Option<String>,
+) {
+    let mut sessions = sessionize(log_selection, unique_by);
     let mut stats: SessionAnalysisStats = SessionAnalysisStats {
         total_count: 0,
         host_paths: HashMap::new(),

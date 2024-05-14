@@ -1,15 +1,31 @@
 use crate::utils::parse_line::parse_line;
 use crate::utils::sessionize::sessionize;
+use regex::Regex;
+
 pub fn sessions_from_ip(
     log_selection: Vec<crate::structs::LineParseResult::LineParseResult>,
-    ip: String,
+    ip: Option<String>,
+    unique_by: Option<String>,
 ) {
-    let sessions = sessionize(log_selection);
+    let sessions = sessionize(log_selection, unique_by.clone());
     let mut host_paths: Vec<Vec<String>> = Vec::new();
     let mut session_start_times: Vec<String> = Vec::new();
     let mut session_end_times: Vec<String> = Vec::new();
     for session_entry in sessions {
-        if session_entry.ip_address == ip {
+        let mut key: String = "".to_string();
+        if ip.clone().is_some() {
+            key = ip.clone().unwrap();
+        } else if unique_by.clone().is_some() {
+            let u = unique_by.clone().unwrap();
+            let r = Regex::new(&regex::escape(&u)).unwrap();
+            let m = r.find(&session_entry.lines[0]);
+            if m.is_some() {
+                key = m.unwrap().clone().as_str().to_string();
+            } else {
+                continue;
+            }
+        }
+        if session_entry.ip_address == key {
             for session in session_entry.sessions {
                 let mut host_path: Vec<String> = Vec::new();
                 if session.len() != 0 && session.len() != 1 {

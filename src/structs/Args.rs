@@ -71,4 +71,7 @@ pub struct ArgParser {
 
     #[arg(short = 'c', long = "cm", action=ArgAction::SetTrue)]
     pub conserve_memory: Option<bool>,
+
+    #[arg(short = 'y', long = "ub")]
+    pub unique_by: Option<String>,
 }

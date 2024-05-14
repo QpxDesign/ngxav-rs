@@ -1,6 +1,6 @@
 use crate::utils::parse_nginx_time_format::parse_nginx_time_format;
 use chrono::prelude::*;
-use std::borrow::Cow;
+use regex::Regex;
 use std::collections::HashMap;
 
 #[derive(Clone)]
@@ -10,25 +10,41 @@ pub struct SessionOccurrences {
     pub times: Vec<DateTime<Utc>>,
     pub sessions: Vec<Vec<String>>,
 }
+
 pub fn sessionize(
     lines: Vec<crate::structs::LineParseResult::LineParseResult>,
+    unique_by: Option<String>,
 ) -> Vec<SessionOccurrences> {
     let session_cutoff_min = 10;
-    let mut occurrences: HashMap<&str, SessionOccurrences> = HashMap::new();
-
+    let mut occurrences: HashMap<String, SessionOccurrences> = HashMap::new();
+    let mut r = Regex::new("").unwrap();
+    if unique_by.is_some() {
+        let u = &unique_by.clone().unwrap();
+        r = Regex::new(&u).unwrap();
+    }
     for parsed_line in lines {
-        if parsed_line.ip_address != "-" {
+        let mut key: String = "".to_string();
+        if unique_by.is_some() {
+            let m = r.find(parsed_line.full_text);
+            if m.is_some() {
+                key = m.unwrap().as_str().to_string();
+            } else {
+                continue;
+            }
+        } else {
+            key = parsed_line.ip_address.to_string()
+        }
+        if &key != "-" {
             let time: DateTime<Utc> = parse_nginx_time_format(&parsed_line.time);
-            if !occurrences.contains_key(&parsed_line.ip_address) {
-                let cl = parsed_line.ip_address.to_owned();
+            if !occurrences.contains_key(&key) {
                 let mut l = Vec::new();
                 l.push(parsed_line.full_text.to_string());
                 let mut t = Vec::new();
                 t.push(time);
                 occurrences.insert(
-                    parsed_line.ip_address,
+                    key.clone(),
                     SessionOccurrences {
-                        ip_address: cl,
+                        ip_address: key.clone(),
                         lines: l,
                         times: t,
                         sessions: Vec::new(),
@@ -36,15 +52,11 @@ pub fn sessionize(
                 );
             } else {
                 occurrences
-                    .get_mut(&parsed_line.ip_address)
+                    .get_mut(key.as_str())
                     .unwrap()
                     .lines
                     .push(parsed_line.full_text.to_string());
-                occurrences
-                    .get_mut(&parsed_line.ip_address)
-                    .unwrap()
-                    .times
-                    .push(time);
+                occurrences.get_mut(key.as_str()).unwrap().times.push(time);
             }
         }
     }

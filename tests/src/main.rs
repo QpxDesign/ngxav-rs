@@ -6,6 +6,7 @@ extern crate tokio;
 use colored::Colorize;
 use toml::from_str;
 extern crate md5;
+use std::env;
 
 #[derive(Deserialize, Debug)]
 struct TestCase {

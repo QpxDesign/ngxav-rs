@@ -81,19 +81,19 @@ fn main() {
             utils::keep_line::keep_line(p, false) == true
         })
         .collect();
-    if !args.unique.is_none() && args.unique == Some(true) {
-        kel = utils::unique_ips_only::unique_ips_only(kel);
+    if (!args.unique.is_none() && args.unique == Some(true)) {
+        kel = utils::unique_ips_only::unique_ips_only(kel, args.unique_by.clone());
     }
     if !args.analytics.is_none() && args.analytics == Some(true) {
         utils::generate_analytics::generate_analytical_output(kel);
     } else if !args.session_analytics.is_none() && args.session_analytics == Some(true) {
-        utils::session_analytics::session_analytics(kel);
+        utils::session_analytics::session_analytics(kel, args.unique_by.clone());
     } else if !args.large.is_none() {
         utils::sort_by_body_size::sort_by_body_size(kel, args.large.unwrap());
     } else if !args.ip_ses.is_none() {
-        utils::sessions_from_ip::sessions_from_ip(kel, args.ip_ses.unwrap());
+        utils::sessions_from_ip::sessions_from_ip(kel, args.ip_ses, args.unique_by);
     } else if !args.session_unqiue.is_none() && args.session_unqiue == Some(true) {
-        utils::session_unique::session_unique(kel);
+        utils::session_unique::session_unique(kel, args.unique_by);
     } else {
         kel.par_sort_by_key(|a| parse_nginx_time_format(&a.time).timestamp());
         for line in kel {

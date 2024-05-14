@@ -117,3 +117,21 @@ name = "UserAgent/Browser"
 run_type = "checksum"
 cmd = "../target/release/ngxav -f ../tests/logs/750k.log --browser safari"
 expect = "afc81eea18cbd8c6e836238d0a158172"
+
+[[test_cases]]
+name = "SessionAnalytics/UniqueBy/NoError"
+run_type = "lines_count"
+cmd = "../target/release/ngxav -f ../tests/logs/unique_by_test.log -x -y get-trains....................................."
+expect = "27"
+
+[[test_cases]]
+name = "SessionUnique/UniqueBy"
+run_type = "lines_count"
+cmd = "../target/release/ngxav -f ../tests/logs/unique_by_test.log -u -y get-trains....................................."
+expect = "2805"
+
+[[test_cases]]
+name = "IpSessions/UniqueBy"
+run_type = "checksum"
+cmd = "../target/release/ngxav -f ../tests/logs/unique_by_test.log -d get-trains?a93f9301-4791-44b2-98bd-a62b8182fad5 -y get-trains....................................."
+expect = "4bd7dae69fc644bf0b8782523bbc0f59"
