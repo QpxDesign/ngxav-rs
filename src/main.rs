@@ -1,4 +1,5 @@
 use crate::sort_by_date::sort_by_date;
+use atty::Stream;
 use clap::Parser;
 use rayon::prelude::*;
 use std::collections::HashMap;
@@ -29,6 +30,14 @@ fn read_line_by_line(filename: impl AsRef<Path>) -> io::Result<io::Lines<io::Buf
     Ok(io::BufReader::new(file).lines())
 }
 
+fn load_stdin() -> Vec<String> {
+    let stdin = io::stdin();
+    return stdin
+        .lock()
+        .lines()
+        .map(|line| line.expect("Failed to read line"))
+        .collect();
+}
 fn main() {
     let args: crate::structs::Args::ArgParser = ArgParser::parse();
     if args.thread_count.is_some() {
@@ -37,10 +46,12 @@ fn main() {
             .build_global()
             .unwrap();
     }
-    let file_md = metadata(args.file.clone()).unwrap();
-    if !args.conserve_memory.is_none() && args.conserve_memory.unwrap() == true && file_md.is_file()
+    if args.file.is_some()
+        && !args.conserve_memory.is_none()
+        && args.conserve_memory.unwrap() == true
+        && metadata(args.file.clone().unwrap()).unwrap().is_file()
     {
-        if let Ok(lines) = read_line_by_line(args.file) {
+        if let Ok(lines) = read_line_by_line(args.file.unwrap()) {
             let mut occurrences: HashMap<String, bool> = HashMap::new();
             for line in lines.flatten() {
                 let ip: String = line.clone().split(" ").collect::<Vec<&str>>()[0].to_string();
@@ -59,15 +70,22 @@ fn main() {
         return;
     }
     let mut lines = Vec::new();
-    if file_md.is_dir() {
+    let stdin = load_stdin();
+    if args.file.is_none() && stdin.len() == 0 {
+        panic!("error must either pipe-in log data or provide file with -f")
+    }
+    if args.file.is_some() && metadata(args.file.clone().unwrap()).unwrap().is_dir() {
         if args.conserve_memory.is_some() && args.conserve_memory.unwrap() == true {
-            utils::read_folder_conserve_memory::read_folder_conserve_memory(args.file, args.unique);
+            utils::read_folder_conserve_memory::read_folder_conserve_memory(
+                args.file.unwrap(),
+                args.unique,
+            );
             return;
-        } else {
-            lines = utils::read_folder::read_folder(args.file);
         }
+    } else if args.file.is_none() && stdin.len() > 0 {
+        lines = stdin.clone();
     } else {
-        lines = lines_from_file(args.file).expect("should read");
+        lines = lines_from_file(args.file.unwrap()).expect("should read");
     }
     let range = sort_by_date(&lines, &args.last, &args.start_date, &args.end_date);
     let mut kel: Vec<crate::structs::LineParseResult::LineParseResult> = lines[range.0..range.1]

@@ -5,7 +5,7 @@ use clap::Parser;
 #[command(version, about, long_about = None)]
 pub struct ArgParser {
     #[arg(short = 'f', long = "file")]
-    pub file: String,
+    pub file: Option<String>,
 
     #[arg(short = 's', long = "search")]
     pub search: Option<String>,
