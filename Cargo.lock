@@ -701,7 +701,7 @@ dependencies = [
 
 [[package]]
 name = "ngxav"
-version = "0.6.1"
+version = "0.6.2"
 dependencies = [
  "atty",
  "chrono",

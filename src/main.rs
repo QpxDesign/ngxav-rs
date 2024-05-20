@@ -3,7 +3,8 @@ use atty::Stream;
 use clap::Parser;
 use rayon::prelude::*;
 use std::collections::HashMap;
-use std::iter::FromIterator;
+use std::io::IsTerminal;
+
 use utils::keep_line::keep_line;
 use utils::parse_nginx_time_format::parse_nginx_time_format;
 use utils::read_folder::read_folder;
@@ -32,6 +33,10 @@ fn read_line_by_line(filename: impl AsRef<Path>) -> io::Result<io::Lines<io::Buf
 
 fn load_stdin() -> Vec<String> {
     let stdin = io::stdin();
+    if std::io::stdin().is_terminal() {
+        return Vec::new();
+    }
+
     return stdin
         .lock()
         .lines()
