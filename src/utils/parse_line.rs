@@ -9,6 +9,20 @@ lazy_static! {
 pub fn parse_line(line: &str) -> crate::structs::LineParseResult::LineParseResult {
     let matches: Vec<&str> = R.find_iter(line).map(|mat| mat.as_str()).collect();
     let mut fields = line.split(" ").collect::<Vec<_>>();
+    if fields.len() < 12 || matches.len() < 4 {
+        return crate::structs::LineParseResult::LineParseResult {
+            ip_address: "-",
+            time: "".to_string(),
+            host: "",
+            referer: "",
+            request: "",
+            status: "",
+            body_bytes_sent: 0,
+            request_time: 0,
+            user_agent: "",
+            full_text: line,
+        };
+    }
     return crate::structs::LineParseResult::LineParseResult {
         ip_address: fields[0],
         time: fields[3].replace("[", "") + " " + &fields[4].replace("]", ""),
